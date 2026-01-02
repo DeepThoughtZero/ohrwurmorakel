@@ -1,3 +1,24 @@
+# 🎵 Ohrwurm-Orakel – Das ultimative Musik-Quiz
+
+![Ohrwurm Orakel Vorschau](image_decfc7.png)
+
+**Bist du bereit, dein Musikwissen auf die Probe zu stellen?**
+
+Mach dein Wohnzimmer zur Showbühne! Das **OhrwurmOrakel** ist das interaktive Musik-Quiz für echte Kenner, Party-Gamer und Nostalgiker. Egal ob du ein Kind der 80er bist, die großen Hymnen liebst oder bei aktuellen Charts mitsingen kannst – hier ist für jeden die richtige Playlist dabei.
+
+### Das erwartet euch:
+
+* 🚀 **Gigantische Auswahl:** Von der Hitparade über Kult-Schlager bis zu Artist-Specials.
+* ⏱️ **Nervenkitzel:** Spielt gegen die Uhr! Mit dem integrierten Lied-Timer steigt die Spannung.
+* 🎉 **Party-Modus:** Perfekt für den Beamer oder das Tablet in der Tischmitte.
+* 👁️ **Blind Audition:** Das Video bleibt verdeckt – verlasst euch ganz auf eure Ohren!
+
+Einfach Playlist wählen, "Abspielen" drücken und losraten: **Interpret**, **Titel** oder **Jahr**. Wer erkennt den Song nach den ersten Sekunden?
+
+> **Warnung:** Akute Ohrwurm-Gefahr! 🎶
+
+---
+
 ## 🎲 Spielvarianten
 
 Das **OhrwurmOrakel** ist flexibel! Egal ob ihr euch duellieren wollt, als Team gegen die Zeit spielt oder eine entspannte Runde rätselt – hier ist für jeden etwas dabei.
@@ -12,7 +33,7 @@ Der "Play"-Button wird gedrückt. Jetzt zählt jede Millisekunde!
 ### ⏳ 2. Die Zeitreise: "Timeline Battle"
 *Taktik, Wissen und eine schnelle Hand.*
 
-**Vorbereitung:** Die Jahreskärtchen liegen als Vorrat in der Tischmitte. Dazu eine **Glocke** (oder ein Buzzer). Jeder Spieler startet mit einer leeren "Zeitreihe" vor sich.
+**Vorbereitung:** Die Jahreskärtchen liegen als Vorrat in der Tischmitte. Dazu eine **Glocke** (oder ein Buzzer). Jeder Spieler startet mit einem mittleren Jahreskärtchen vor sich.
 
 1.  Ein Song wird angespielt.
 2.  Wer glaubt, das Erscheinungsjahr zu wissen (oder wo es sich einordnet), haut auf die Glocke! 🔔
@@ -48,9 +69,10 @@ Ihr spielt als ein Team. Stellt einen Timer (z.B. auf 5 oder 10 Minuten).
 
 Damit ihr direkt loslegen könnt, habe ich Jahreskärtchen und Punktelisten vorbereitet. Einfach herunterladen, ausdrucken und ausschneiden.
 
-* **📄 [Jahreskärtchen (PDF) herunterladen](material/jahreskarten.pdf)** *(Enthält die Jahre 1960 bis 2025)*
+* 📄 **[Jahreskärtchen (PDF) herunterladen](material/Jahreskarten.pdf)**
+    *(Enthält die Jahre 1960 bis 2025)*
 
 ---
 
-**Copyright & Lizenz** 
+### Copyright & Lizenz
 Dieses Projekt ist für die private Nutzung gedacht. Der Quellcode darf ohne meine ausdrückliche schriftliche Genehmigung nicht kopiert, modifiziert oder anderweitig verbreitet werden. Das Spielen über die bereitgestellte Webseite ist natürlich erlaubt und erwünscht!
