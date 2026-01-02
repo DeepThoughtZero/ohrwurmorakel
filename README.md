@@ -1,15 +1,15 @@
 # 🎵 Ohrwurm-Orakel – Das ultimative Musik-Quiz
 
-![Ohrwurm Orakel Vorschau](image_decfc7.png)
+![Ohrwurm Orakel Vorschau](material/vorschau_ohrwurmorakel01.png)
 
 **Bist du bereit, dein Musikwissen auf die Probe zu stellen?**
 
-Mach dein Wohnzimmer zur Showbühne! Das **OhrwurmOrakel** ist das interaktive Musik-Quiz für echte Kenner, Party-Gamer und Nostalgiker. Egal ob du ein Kind der 80er bist, die großen Hymnen liebst oder bei aktuellen Charts mitsingen kannst – hier ist für jeden die richtige Playlist dabei.
+Mach dein Wohnzimmer zur Showbühne! Das **Ohrwurm-Orakel** ist das interaktive Musik-Quiz für echte Kenner, Party-Gamer und Nostalgiker. Egal ob du ein Kind der 80er bist, die großen Hymnen liebst oder bei aktuellen Charts mitsingen kannst – hier ist für jeden die richtige Playlist dabei.
 
 ### Das erwartet euch:
 
 * 🚀 **Gigantische Auswahl:** Von der Hitparade über Kult-Schlager bis zu Artist-Specials.
-* ⏱️ **Nervenkitzel:** Spielt gegen die Uhr! Mit dem integrierten Lied-Timer steigt die Spannung.
+* ⏱️ **Nervenkitzel:** Spielt gegen die Uhr! Mit den integrierten Spiel- und Lied-Timern steigt die Spannung.
 * 🎉 **Party-Modus:** Perfekt für den Beamer oder das Tablet in der Tischmitte.
 * 👁️ **Blind Audition:** Das Video bleibt verdeckt – verlasst euch ganz auf eure Ohren!
 
