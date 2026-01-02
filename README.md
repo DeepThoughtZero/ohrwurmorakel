@@ -1,8 +1,18 @@
 # 🎵 Ohrwurm-Orakel – Das ultimative Musik-Quiz
 
-![Ohrwurm Orakel Vorschau](material/vorschau_ohrwurmorakel01.png)
+> 💎 Für das beste Erlebnis (ohne Werbeunterbrechungen) empfehlen wir einen Account mit **YouTube Premium**.
+
+<p align="center">
+  <img src="material/vorschau_ohrwurmorakel01.png" width="45%" alt="Spiel-Darstellung" />
+  &nbsp; &nbsp; <img src="material/vorschau_ohrwurmorakel02.png" width="45%" alt="Einstellungen" />
+</p>
 
 **Bist du bereit, dein Musikwissen auf die Probe zu stellen?**
+
+Mach dein Wohnzimmer zur Showbühne! Das **OhrwurmOrakel** ist das interaktive Musik-Quiz für echte Kenner, Party-Gamer und Nostalgiker. Egal ob du ein Kind der 80er bist, die großen Hymnen liebst oder bei aktuellen Charts mitsingen kannst – hier ist für jeden die richtige Playlist dabei.
+
+### Das erwartet euch:
+... (hier geht dein Text weiter wie bisher)
 
 Mach dein Wohnzimmer zur Showbühne! Das **Ohrwurm-Orakel** ist das interaktive Musik-Quiz für echte Kenner, Party-Gamer und Nostalgiker. Egal ob du ein Kind der 80er bist, die großen Hymnen liebst oder bei aktuellen Charts mitsingen kannst – hier ist für jeden die richtige Playlist dabei.
 
@@ -76,3 +86,5 @@ Damit ihr direkt loslegen könnt, habe ich Jahreskärtchen und Punktelisten vorb
 
 ### Copyright & Lizenz
 Dieses Projekt ist für die private Nutzung gedacht. Der Quellcode darf ohne meine ausdrückliche schriftliche Genehmigung nicht kopiert, modifiziert oder anderweitig verbreitet werden. Das Spielen über die bereitgestellte Webseite ist natürlich erlaubt und erwünscht!
+
+> **Rechtlicher Hinweis:** Markennamen und Titel (z.B. *SWR1 Hitparade*) werden nur zur Identifikation der Playlists genutzt. Dieses Projekt steht in keiner Verbindung zum SWR oder anderen Rechteinhabern.
