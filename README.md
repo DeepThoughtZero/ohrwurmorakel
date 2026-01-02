@@ -1,5 +1,12 @@
 # 🎵 Ohrwurm-Orakel – Das ultimative Musik-Quiz
 
+<div align="center">
+  <h2>🚀 <a href="https://deepthoughtzero.github.io/ohrwurmorakel/">HIER KLICKEN UND DIREKT LOSSPIELEN!</a> 🚀</h2>
+  <p><strong>Sofort im Browser starten • Keine Installation nötig • Einfach Link teilen</strong></p>
+</div>
+
+---
+
 > 💎 Für das beste Erlebnis (ohne Werbeunterbrechungen) empfehlen wir einen Account mit **YouTube Premium**.
 
 <p align="center">
