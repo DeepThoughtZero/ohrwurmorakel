@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 Ohrwurm-Orakel - Das Party-Musik-Quiz!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(78, 205, 196, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 230, 109, 0.05) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            font-weight: 800;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease infinite;
+            text-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        /* Container für den Player und den "Vorhang" */
+        #player-container {
+            position: relative;
+            width: 340px;
+            height: 340px;
+            margin: 20px auto;
+            background: linear-gradient(145deg, #1e1e3f, #2a2a5a);
+            border-radius: 20px;
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(78, 205, 196, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* Der YouTube Iframe */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+        }
+
+        /* Der Spoiler-Schutz (deckt das Video ab) */
+        #cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(145deg, #2d2d5a, #1a1a3e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            border-radius: 20px;
+        }
+
+        /* SVG Music Mystery Graphic */
+        .mystery-graphic {
+            width: 280px;
+            height: 280px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Note animations */
+        .note-float {
+            animation: noteFloat 2s ease-in-out infinite;
+        }
+
+        .note-float-delay {
+            animation: noteFloat 2s ease-in-out infinite 0.5s;
+        }
+
+        .note-float-delay2 {
+            animation: noteFloat 2s ease-in-out infinite 1s;
+        }
+
+        @keyframes noteFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .question-pulse {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+        }
+
+        /* Button Container */
+        #button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 30px auto;
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Modern Game Buttons */
+        .game-btn {
+            padding: 18px 35px;
+            font-size: 1.1em;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            border: none;
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .game-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .game-btn:hover::before {
+            left: 100%;
+        }
+
+        .game-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .game-btn:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        /* Play Button - Green/Teal */
+        .btn-play {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            box-shadow:
+                0 10px 30px rgba(0, 184, 148, 0.4),
+                0 0 20px rgba(0, 184, 148, 0.2);
+        }
+
+        .btn-play:hover {
+            box-shadow:
+                0 15px 40px rgba(0, 184, 148, 0.5),
+                0 0 40px rgba(0, 184, 148, 0.4);
+        }
+
+        /* Reveal Button - Purple/Pink */
+        .btn-reveal {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            color: white;
+            box-shadow:
+                0 10px 30px rgba(168, 85, 247, 0.4),
+                0 0 20px rgba(168, 85, 247, 0.2);
+        }
+
+        .btn-reveal:hover {
+            box-shadow:
+                0 15px 40px rgba(168, 85, 247, 0.5),
+                0 0 40px rgba(168, 85, 247, 0.4);
+        }
+
+        /* Next Button - Orange/Yellow */
+        .btn-next {
+            background: linear-gradient(135deg, #f97316, #facc15);
+            color: white;
+            box-shadow:
+                0 10px 30px rgba(249, 115, 22, 0.4),
+                0 0 20px rgba(249, 115, 22, 0.2);
+        }
+
+        .btn-next:hover {
+            box-shadow:
+                0 15px 40px rgba(249, 115, 22, 0.5),
+                0 0 40px rgba(249, 115, 22, 0.4);
+        }
+
+        /* Button Icons */
+        .btn-icon {
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+
+        /* Pulsating highlight for next action button */
+        .btn-highlight {
+            animation: btnPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes btnPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+                filter: brightness(1.2);
+            }
+        }
+
+        .btn-play.btn-highlight {
+            box-shadow:
+                0 10px 30px rgba(0, 184, 148, 0.6),
+                0 0 40px rgba(0, 184, 148, 0.5),
+                0 0 60px rgba(0, 184, 148, 0.3);
+        }
+
+        .btn-reveal.btn-highlight {
+            box-shadow:
+                0 10px 30px rgba(168, 85, 247, 0.6),
+                0 0 40px rgba(168, 85, 247, 0.5),
+                0 0 60px rgba(168, 85, 247, 0.3);
+        }
+
+        .btn-next.btn-highlight {
+            box-shadow:
+                0 10px 30px rgba(249, 115, 22, 0.6),
+                0 0 40px rgba(249, 115, 22, 0.5),
+                0 0 60px rgba(249, 115, 22, 0.3);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Solution Display */
+        #solution {
+            margin-top: 25px;
+            font-size: 1.6em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            min-height: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Playlist Auswahl Container */
+        #playlist-selection {
+            margin-top: 50px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        #playlist-selection h3 {
+            margin-bottom: 20px;
+            color: #fff;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        #playlist-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .playlist-btn {
+            padding: 12px 24px;
+            font-size: 1em;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .playlist-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .playlist-btn.selected {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            border-color: #00b894;
+            box-shadow: 0 5px 20px rgba(0, 184, 148, 0.4);
+        }
+
+        #playlist-info {
+            margin-top: 20px;
+            font-size: 1em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Fehlermeldung für nicht verfügbare Videos */
+        #error-message {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 20px 35px;
+            border-radius: 20px;
+            font-size: 1.1em;
+            text-align: center;
+            z-index: 1000;
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(231, 76, 60, 0.3);
+            animation: errorSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #error-message.hidden {
+            display: none;
+        }
+
+        @keyframes errorSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* Timer Display */
+        #timer-display {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px auto;
+            max-width: 500px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timer-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 15px 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            min-width: 140px;
+        }
+
+        .timer-label {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .timer-value {
+            font-size: 2em;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-value.warning {
+            color: #f97316;
+            animation: timerPulse 1s ease-in-out infinite;
+        }
+
+        .timer-value.danger {
+            color: #ef4444;
+            animation: timerPulse 0.5s ease-in-out infinite;
+        }
+
+        @keyframes timerPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .timer-box.inactive {
+            opacity: 0.4;
+        }
+
+        /* Timer Settings */
+        #timer-settings {
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        #timer-settings h3 {
+            margin-bottom: 20px;
+            color: #fff;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 15px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .setting-label {
+            font-size: 1em;
+            color: rgba(255, 255, 255, 0.9);
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .setting-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .setting-slider {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 200px;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            transition: background 0.2s;
+        }
+
+        .setting-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 184, 148, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .setting-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .setting-slider::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 184, 148, 0.4);
+        }
+
+        .setting-value {
+            min-width: 60px;
+            text-align: center;
+            font-weight: 600;
+            color: #00cec9;
+        }
+
+        .setting-checkbox {
+            width: 24px;
+            height: 24px;
+            accent-color: #00b894;
+            cursor: pointer;
+        }
+
+        .reset-btn {
+            padding: 10px 20px;
+            font-size: 0.95em;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            #player-container {
+                width: 300px;
+                height: 300px;
+            }
+
+            .mystery-graphic {
+                width: 240px;
+                height: 240px;
+            }
+
+            .game-btn {
+                padding: 15px 25px;
+                font-size: 1em;
+            }
+
+            #button-container {
+                gap: 10px;
+            }
+
+            #timer-display {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .timer-box {
+                min-width: auto;
+            }
+
+            .setting-slider {
+                width: 150px;
+            }
+        }
+
+        /* Timer visibility based on checkbox state */
+        #song-timer-box.timer-hidden,
+        #game-timer-box.timer-hidden {
+            display: none;
+        }
+
+        .setting-control.control-hidden {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🎵 Ohrwurm-Orakel 🎵</h1>
+
+    <div id="player-container">
+        <div id="player"></div>
+        <div id="cover">
+            <!-- SVG Music Mystery Graphic -->
+            <svg class="mystery-graphic" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background glow -->
+                <defs>
+                    <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" style="stop-color:#a855f7;stop-opacity:0.3" />
+                        <stop offset="100%" style="stop-color:#1a1a3e;stop-opacity:0" />
+                    </radialGradient>
+                    <linearGradient id="noteGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#feca57" />
+                        <stop offset="100%" style="stop-color:#ff6b6b" />
+                    </linearGradient>
+                    <linearGradient id="questionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#48dbfb" />
+                        <stop offset="100%" style="stop-color:#a855f7" />
+                    </linearGradient>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+                        <feMerge>
+                            <feMergeNode in="coloredBlur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <!-- Background glow circle -->
+                <circle cx="100" cy="100" r="90" fill="url(#glowGradient)" />
+
+                <!-- Curved Staff Lines -->
+                <g stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="none">
+                    <path d="M 20 70 Q 100 50, 180 70" class="staff-line" />
+                    <path d="M 20 85 Q 100 65, 180 85" class="staff-line" />
+                    <path d="M 20 100 Q 100 80, 180 100" class="staff-line" />
+                    <path d="M 20 115 Q 100 95, 180 115" class="staff-line" />
+                    <path d="M 20 130 Q 100 110, 180 130" class="staff-line" />
+                </g>
+
+                <!-- Musical Note 1 (left) -->
+                <g class="note-float" filter="url(#glow)">
+                    <ellipse cx="45" cy="95" rx="8" ry="6" fill="url(#noteGradient)" transform="rotate(-20 45 95)" />
+                    <rect x="51" y="55" width="3" height="40" fill="url(#noteGradient)" />
+                    <path d="M 54 55 Q 70 60, 65 75" stroke="url(#noteGradient)" stroke-width="3" fill="none" />
+                </g>
+
+                <!-- Musical Note 2 (right) -->
+                <g class="note-float-delay" filter="url(#glow)">
+                    <ellipse cx="155" cy="85" rx="8" ry="6" fill="url(#noteGradient)" transform="rotate(-20 155 85)" />
+                    <rect x="161" y="45" width="3" height="40" fill="url(#noteGradient)" />
+                    <path d="M 164 45 Q 180 50, 175 65" stroke="url(#noteGradient)" stroke-width="3" fill="none" />
+                </g>
+
+                <!-- Small floating notes -->
+                <g class="note-float-delay2" filter="url(#glow)">
+                    <ellipse cx="30" cy="140" rx="5" ry="4" fill="#ff9ff3" transform="rotate(-15 30 140)" />
+                    <rect x="34" y="115" width="2" height="25" fill="#ff9ff3" />
+                </g>
+
+                <g class="note-float" filter="url(#glow)">
+                    <ellipse cx="170" cy="135" rx="5" ry="4" fill="#48dbfb" transform="rotate(-15 170 135)" />
+                    <rect x="174" y="110" width="2" height="25" fill="#48dbfb" />
+                </g>
+
+                <!-- Central Question Mark -->
+                <g class="question-pulse" filter="url(#glow)">
+                    <text x="100" y="115" font-family="Poppins, sans-serif" font-size="70" font-weight="800"
+                        fill="url(#questionGradient)" text-anchor="middle">?</text>
+                </g>
+
+                <!-- Decorative sparkles -->
+                <circle cx="75" cy="55" r="2" fill="#feca57" opacity="0.8">
+                    <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1.5s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="125" cy="145" r="2" fill="#48dbfb" opacity="0.8">
+                    <animate attributeName="opacity" values="0.3;0.8;0.3" dur="1.5s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="165" cy="55" r="1.5" fill="#ff9ff3" opacity="0.8">
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="35" cy="155" r="1.5" fill="#00cec9" opacity="0.8">
+                    <animate attributeName="opacity" values="1;0.4;1" dur="1.8s" repeatCount="indefinite" />
+                </circle>
+            </svg>
+        </div>
+    </div>
+
+    <div id="button-container">
+        <button class="game-btn btn-play" onclick="playSong()">
+            <span class="btn-icon">▶</span>Abspielen
+        </button>
+        <button class="game-btn btn-reveal" onclick="revealSong()">
+            <span class="btn-icon">✨</span>Auflösen
+        </button>
+        <button class="game-btn btn-next" onclick="nextSong()">
+            <span class="btn-icon">⏭</span>Nächster Song
+        </button>
+    </div>
+
+    <div id="solution"></div>
+
+    <!-- Fehlermeldung für nicht verfügbare Videos -->
+    <div id="error-message" class="hidden">
+        ⚠️ Lied nicht verfügbar<br>
+        <small>Drücke "Play" für das nächste Lied</small>
+    </div>
+
+    <!-- Timer Display -->
+    <div id="timer-display">
+        <div class="timer-box" id="song-timer-box">
+            <div class="timer-label">🎵 Lied-Timer</div>
+            <div class="timer-value" id="song-timer-value">--:--</div>
+        </div>
+        <div class="timer-box" id="game-timer-box">
+            <div class="timer-label">⏱️ Gesamt-Timer</div>
+            <div class="timer-value" id="game-timer-value">--:--</div>
+        </div>
+    </div>
+
+    <!-- Playlist Auswahl -->
+    <div id="playlist-selection">
+        <h3>🎧 Playlists auswählen:</h3>
+        <div id="playlist-buttons"><span style="color:#888;">Lade Playlists...</span></div>
+        <div id="playlist-info"></div>
+    </div>
+
+    <!-- Timer Einstellungen -->
+    <div id="timer-settings">
+        <h3>⏱️ Timer-Einstellungen</h3>
+
+        <div class="setting-row">
+            <label class="setting-label">
+                <input type="checkbox" id="song-timer-enabled" class="setting-checkbox" checked>
+                Lied-Timer aktivieren
+            </label>
+            <div class="setting-control" id="song-timer-control">
+                <input type="range" id="song-timer-slider" class="setting-slider" min="5" max="60" value="15">
+                <span class="setting-value" id="song-timer-label">15 Sek</span>
+            </div>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.15); margin: 20px 0;">
+
+        <div class="setting-row">
+            <label class="setting-label">
+                <input type="checkbox" id="game-timer-enabled" class="setting-checkbox">
+                Gesamt-Timer aktivieren
+            </label>
+            <div class="setting-control" id="game-timer-control">
+                <input type="range" id="game-timer-slider" class="setting-slider" min="1" max="15" value="5">
+                <span class="setting-value" id="game-timer-label">5 Min</span>
+                <button class="reset-btn" onclick="resetGameTimer()">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Playlist Dateien laden -->
+    <script>
+        // Playlists direkt eingebettet (für Mobile-Kompatibilität)
+        var PLAYLISTS = [];
+
+        PLAYLISTS.push({
+            name: "SWR1 Hitparade 1-100",
+            id: "swr1-hitparade-1-100",
+            songs: [
+                { id: 'vsl3gBVO2k4', title: 'Queen - Bohemian Rhapsody', year: 1975 },
+                { id: 'xbhCPt6PZIU', title: 'Led Zeppelin - Stairway to heaven', year: 1971 },
+                { id: 'Bk7RVw3I8eg', title: 'Disturbed - The sound of silence', year: 1964 },
+                { id: '2l9QeXQcO_8', title: 'Reinhard Mey - Das Narrenschiff', year: 1998 },
+                { id: 'OorZcOzNcgE', title: 'Deep Purple - Child in time', year: 1970 },
+                { id: '7FyaEEMRY_A', title: 'Pferdle & Äffle - Der Hafer- und Bananenblues', year: 1976 },
+                { id: '1k8craCGpgs', title: 'Journey - Don\'t stop believin\'', year: 1981 },
+                { id: 'tAGnKpE4NCI', title: 'Metallica - Nothing else matters', year: 1991 },
+                { id: '5WzYy6S0zG4', title: 'City - Am Fenster', year: 1977 },
+                { id: 'lAsvjPc9Oac', title: 'John Miles - Music', year: 1976 },
+                { id: '5vUDmFjWgVo', title: 'Dire Straits - Brothers in arms', year: 1985 },
+                { id: 'pH0IBb29-4U', title: 'Reinhard Mey - Nein, meine Söhne geb\' ich nicht', year: 1986 },
+                { id: '7N6n1I5k8wY', title: 'Linkin Park - The emptiness machine', year: 2024 },
+                { id: '6X9CEi8wkBc', title: 'Die Ärzte - Schrei nach Liebe', year: 1993 },
+                { id: '6w-t9XoO7tU', title: 'Schwoißfuaß - Oinr isch emmr dr Arsch', year: 1981 },
+                { id: '1pEGcK5J3sU', title: 'Udo Lindenberg & Apache 207 - Komet', year: 2023 },
+                { id: 'eIHeHKILdbA', title: 'Hubert von Goisern - Weit, weit weg', year: 1992 },
+                { id: 'EpTZCjJSHms', title: 'Iron Maiden - Fear of the dark', year: 1992 },
+                { id: 'hIp9aG95hKE', title: 'Pink Floyd - Wish you were here', year: 1975 },
+                { id: '9dIgF7pxqIo', title: 'Badischer Bürgermeisterchor - Badnerlied', year: 2000 },
+                { id: 'n_GFN3a0yj0', title: 'AC/DC - Thunderstruck', year: 1990 },
+                { id: '_FrOQC-zEog', title: 'Pink Floyd - Comfortably numb', year: 1979 },
+                { id: 'S7g_W80mQGk', title: 'Metallica - Master of puppets', year: 1986 },
+                { id: 'ttEMYvpoR-k', title: 'Leonard Cohen - Hallelujah', year: 1984 },
+                { id: 'vx2u5uUu3DE', title: 'Die Toten Hosen - Tage wie diese', year: 2012 },
+                { id: 'xFrGuyw1V8s', title: 'ABBA - Dancing queen', year: 1976 },
+                { id: 'IpvUqzPXsFA', title: 'Manowar - Warriors of the world united', year: 2002 },
+                { id: 'o018byLnMFM', title: 'AC/DC - Hells bells', year: 1980 },
+                { id: 'EqPtz5qN7HM', title: 'The Eagles - Hotel California', year: 1976 },
+                { id: 'ZKfIQWGoc9M', title: 'Füenf - Mir im Süden', year: 2002 },
+                { id: 'WjO3m5sO5O4', title: 'Metallica - One', year: 1988 },
+                { id: 'tbkOZTSvrMI', title: 'Guns N\' Roses - November rain', year: 1991 },
+                { id: 'rAn-AWXtHv0', title: 'John Lennon - Imagine', year: 1971 },
+                { id: '22M2f0B4m1c', title: 'Runrig - Loch Lomond', year: 1979 },
+                { id: 'Nje7sjT2Bgw', title: 'Metallica - Enter Sandman', year: 1991 },
+                { id: '9f06QZCVUHg', title: 'Bryan Adams - Summer Of \'69', year: 1984 },
+                { id: '2Y-XN6q9gKY', title: 'Genesis - The carpet crawlers', year: 1974 },
+                { id: '1a0zRBOhxU0', title: 'Gotthilf Fischer - Der reichste Fürst', year: 1974 },
+                { id: 'gEPmA3USJdI', title: 'AC/DC - Highway to hell', year: 1979 },
+                { id: 'Y1fiOJDXAp0', title: 'Freddie Mercury & M. Caballé - Barcelona', year: 1987 },
+                { id: 'zxSTzSEiZ2c', title: 'Bette Midler - The rose', year: 1979 },
+                { id: 't6W8N5JpA5k', title: 'Rainhard Fendrich - Weus\'d a Herz hast wie a Bergwerk', year: 1984 },
+                { id: '8UXircX3VdM', title: 'Pink Floyd - Shine on you crazy diamond', year: 1975 },
+                { id: '53N99Nim6WE', title: 'Pink Floyd - Echoes', year: 1971 },
+                { id: 'aJ7nKTAj4ng', title: 'Konstantin Wecker - Sage nein!', year: 1993 },
+                { id: '0h-_tA1s2bU', title: 'Barclay James Harvest - Hymn', year: 1977 },
+                { id: 'kK42LZqO0wA', title: 'Reinhard Mey - Wie vor Jahr und Tag', year: 1974 },
+                { id: 'eLqvX3g-940', title: 'Reinhard Mey - Über den Wolken', year: 1974 },
+                { id: 'xXPNv5aV3SI', title: 'Deep Purple - April', year: 1969 },
+                { id: '8Pa9x9fZBtY', title: 'Dire Straits - Sultans of swing', year: 1978 },
+                { id: 'k82sA6nQ1g0', title: 'Roy Bianco & Die Abbrunzati Boys - Bella Napoli', year: 2020 },
+                { id: 'PD-MdiUm1_Y', title: 'Led Zeppelin - Kashmir', year: 1975 },
+                { id: '3ZlDZPYzfm4', title: 'Iron Maiden - Run to the hills', year: 1982 },
+                { id: 'L5J0G7zIqEk', title: 'Herbert Grönemeyer - Der Weg', year: 2002 },
+                { id: 'N1z4F-sE1a4', title: 'The Eagles - Hotel California (unplugged)', year: 1976 },
+                { id: 'l6qzhY1f_5w', title: 'Phil Collins - In the air tonight', year: 1981 },
+                { id: 'zNq1vPKxzDo', title: 'Herrn Stumpfes Zieh & Zupfkapelle - Linsengericht', year: 1998 },
+                { id: 'D1xU-J3tF64', title: 'Billy Joel - Piano man', year: 1973 },
+                { id: 'nu0PPSiB96o', title: 'Hannes Wader - Es ist an der Zeit', year: 1980 },
+                { id: '7WVBEB8-wa0', title: 'AC/DC - T.N.T.', year: 1975 },
+                { id: 'eaV9VAl-4oc', title: 'Peter Maffay - Nessaja', year: 1983 },
+                { id: 'uk_wSLTgcVQ', title: 'Black Sabbath - Paranoid', year: 1970 },
+                { id: 'TB751ZCh_zU', title: 'BAP - Verdamp lang her', year: 1981 },
+                { id: '_YYwBLBA4rU', title: 'Gänsehaut - Karl der Käfer', year: 1983 },
+                { id: '4gDch1p4c_M', title: 'AC/DC - Back in black', year: 1980 },
+                { id: '7mHe6FMs46o', title: 'Iron Maiden - The number of the beast', year: 1982 },
+                { id: 'UIVe-rZBcm4', title: 'Iron Butterfly - In-a-gadda-da-vida', year: 1968 },
+                { id: '7vP2hFFV57E', title: 'Iron Maiden - Hallowed be thy name', year: 1982 },
+                { id: 'S7N2m-K0o9Q', title: 'Oimara - Wackelkontakt', year: 2024 },
+                { id: 'yGeR7_ZkR_s', title: 'Die Ärzte - Westerland', year: 1988 },
+                { id: 'X_Beo_5H_s0', title: 'Metallica - The unforgiven', year: 1991 },
+                { id: 'M58wE8GTJf4', title: 'Genesis - Supper\'s ready', year: 1972 },
+                { id: 'dvgZkm1xWPE', title: 'Coldplay - Viva la vida', year: 2008 },
+                { id: 'vsl3gBVO2k4', title: 'Queen - Love of my life', year: 1975 },
+                { id: 'klL-Y9d-R8I', title: 'Coldplay - Fix you', year: 2005 },
+                { id: 'tHHWV0FtFuI', title: 'Udo Lindenberg & Pascal - Wozu sind Kriege da?', year: 1981 },
+                { id: '2Vv-BfVoq4g', title: 'Ed Sheeran - Perfect', year: 2017 },
+                { id: '0dCbXOo7YYM', title: 'ABBA - Thank you for the music', year: 1977 },
+                { id: 'k9yF3p-xX8Y', title: 'Westernhagen - Freiheit', year: 1987 },
+                { id: 'bo_efYhYU2A', title: 'Lady Gaga & Bradley Cooper - Shallow', year: 2018 },
+                { id: 'qX_I6_s0A', title: 'Sportfreunde Stiller - Ein Kompliment', year: 2002 },
+                { id: '3h3idm_-J_g', title: 'Pur - Abenteuerland', year: 1995 },
+                { id: 'wO1X-5yM81E', title: 'Peter Schilling - Major Tom', year: 1982 },
+                { id: '2pjyB6Yf5jM', title: 'Jethro Tull - Locomotive breath', year: 1971 },
+                { id: 'iyIOl-s7JTU', title: 'ABBA - The winner takes it all', year: 1980 },
+                { id: 'HgzGwKwLmgM', title: 'Queen - Don\'t stop me now', year: 1978 },
+                { id: 'qaZ0oAh4QPs', title: 'Toto - Africa', year: 1982 },
+                { id: 'YBumE2z_Tps', title: 'Wolle Kriwanek - Die Stroßaboh', year: 1980 },
+                { id: 'S6Y1gohk5-A', title: 'Prince - Purple rain', year: 1984 },
+                { id: 'dd3btVhwr48', title: 'Dire Straits - Telegraph Road', year: 1982 },
+                { id: 'QDYfEBY9Ne8', title: 'The Beatles - Let it be', year: 1970 },
+                { id: 'ZHVGVZa4jZM', title: 'Faithless - Insomnia', year: 1995 },
+                { id: 'GJOdO8OnyVo', title: 'Rammstein - Deutschland', year: 2019 },
+                { id: 'A7jQ4i-lZ3c', title: 'Udo Lindenberg - Wir ziehen in den Frieden', year: 2018 },
+                { id: '0w4o_f-vG-U', title: 'Unheilig - Geboren um zu leben', year: 2010 },
+                { id: 'pWB5JZRGl0U', title: 'Motörhead - Ace of spades', year: 1980 },
+                { id: 'eIHeHKILdbA', title: 'Hubert von Goisern - Heast as net', year: 1992 },
+                { id: 'unfzfe8f9NI', title: 'ABBA - Mamma mia', year: 1975 },
+                { id: 'A-hwuH5_Be8', title: 'Metallica - Whiskey in the jar', year: 1972 },
+                { id: 'kXYiU_JCYtU', title: 'Linkin Park - Numb', year: 2003 }
+            ]
+        });
+
+        PLAYLISTS.push({
+            name: "SWR1 Hitparade 101-200",
+            id: "swr1-hitparade-101-200",
+            songs: [
+                { id: '_91hNV6vuBY', title: 'Bruce Springsteen - Tougher than the rest', year: 1987 },
+                { id: 'Golden_Huntrx_ID', title: 'Huntr/x - Golden', year: 2025 },
+                { id: 'lXgkuM2NhYI', title: 'David Bowie - Heroes', year: 1977 },
+                { id: 'x0q8Oho_RjM', title: 'Udo Jürgens - Griechischer Wein', year: 1974 },
+                { id: 'gQj8x9e1eIg', title: 'Udo Jürgens - Ich war noch niemals in New York', year: 1982 },
+                { id: 'k3Fa4lOQfbA', title: 'Vicky Leandros - Ich liebe das Leben', year: 1975 },
+                { id: 'Xz2a4_X0z8U', title: 'Jonny Hill - Ruf Teddybär eins-vier', year: 1978 },
+                { id: '5X-yqPhItr8', title: 'Die Toten Hosen - Hier kommt Alex', year: 1988 },
+                { id: 'aGSKrC7dGcY', title: 'Depeche Mode - Enjoy the silence', year: 1990 },
+                { id: '_Jtpf8N5IDE', title: 'Queen - Who wants to live forever?', year: 1986 },
+                { id: 'eVTXPUF4Oz4', title: 'Linkin Park - In the end', year: 2000 },
+                { id: 'Qp_d6l2L95M', title: 'Andreas Gabalier - Amoi seg\' ma uns wieder', year: 2008 },
+                { id: '4fWyzwo1xg0', title: 'Simon & Garfunkel - The sound of silence', year: 1964 },
+                { id: 'tJjI6tYfWbU', title: 'Rio Reiser - Für immer und dich', year: 1986 },
+                { id: '8v_4Oj_I9mE', title: 'BAP - Do kanns zaubere', year: 1982 },
+                { id: 'lc6F47Z6PI4', title: 'Bruce Springsteen - The River', year: 1980 },
+                { id: 'JwYX52BP2Sk', title: 'Pink Floyd - Time', year: 1973 },
+                { id: 'Video_Wendrsonn', title: 'Wendrsonn - Da ben i dahoim', year: 2002 },
+                { id: 'NvR60Wg9R7Q', title: 'Bon Jovi - Bed of roses', year: 1993 },
+                { id: 'XFkzRNyygfk', title: 'Radiohead - Creep', year: 1992 },
+                { id: 'N0H48bpJstm', title: 'Uriah Heep - Lady in black', year: 1971 },
+                { id: 'K0siUU8Rkfd', title: 'Ozzy Osbourne - Mama, I\'m coming home', year: 1991 },
+                { id: 'YQHsXMglC9A', title: 'Adele - Hello', year: 2015 },
+                { id: 'luwAMFcc2f8', title: 'Robbie Williams - Angels', year: 1997 },
+                { id: 'n4RjJKxsamQ', title: 'Scorpions - Wind of change', year: 1990 },
+                { id: 'Vq9x_3J9qIE', title: 'Wolfgang Ambros - Es lebe der Zentralfriedhof', year: 1975 },
+                { id: 'lDK9QqIzhwk', title: 'Bon Jovi - Livin\' on a prayer', year: 1986 },
+                { id: 'gMqIuAJ92tM', title: 'Peter Fox - Haus am See', year: 2008 },
+                { id: 'sHQ_aTjXobs', title: 'Lynyrd Skynyrd - Simple man', year: 1973 },
+                { id: 'hTWKbfoikeg', title: 'Nirvana - Smells like teen spirit', year: 1991 },
+                { id: 'V1bFr2SWP1I', title: 'Reinhard Mey - Gute Nacht, Freunde', year: 1972 },
+                { id: 'Qq4j1LtCdww', title: 'Alice Cooper - Poison', year: 1989 },
+                { id: 'LCCiwPEdEpg', title: 'Ozzy Osbourne - Dreamer', year: 2001 },
+                { id: 'wTP2RUD_cL0', title: 'Dire Straits - Money for nothing', year: 1985 },
+                { id: '6Ejga4kJUts', title: 'The Cranberries - Zombie', year: 1994 },
+                { id: '7bI5J6_I4yE', title: 'Konstantin Wecker - Willy', year: 1977 },
+                { id: 'video_Mey_Mensch', title: 'Reinhard Mey - Menschenjunges', year: 1977 },
+                { id: 'M_j3_j_I7s0', title: 'Hannes Wader - Heute hier, morgen dort', year: 1972 },
+                { id: 't1TcDHrkQYg', title: 'Alphaville - Forever young', year: 1984 },
+                { id: '2Ox1Tore9nw', title: 'Elvis Presley - In the ghetto', year: 1969 },
+                { id: '7X9_6q_I8jA', title: 'Münchener Freiheit - Ohne Dich', year: 1985 },
+                { id: 'vx2u5uUu3DE', title: 'Die Toten Hosen - Altes Fieber', year: 2012 },
+                { id: 'video_ElementOfCrime', title: 'Element of Crime - Am Ende denk ich immer nur an dich', year: 2009 },
+                { id: 'K5_E_I6_s0A', title: 'Peter Maffay - Über sieben Brücken mußt du geh\'n', year: 1978 },
+                { id: 'BGBM5vWiBLo', title: 'Pink Floyd - High hopes', year: 1994 },
+                { id: 'Sapphire_EdSheeran', title: 'Ed Sheeran - Sapphire', year: 2025 },
+                { id: 'N0_7_I6_s0A', title: 'Doro - Für immer', year: 1987 },
+                { id: 'YQ_8_I6_s0A', title: 'Herbert Grönemeyer - Mensch', year: 2002 },
+                { id: 'v_8_I6_s0A', title: 'Udo Lindenberg - Cello', year: 1973 },
+                { id: 'WEQnzs8wl6E', title: 'Metallica - Fade to black', year: 1984 },
+                { id: '4G-YQA_BSOU', title: 'Simon & Garfunkel - Bridge over troubled water', year: 1970 },
+                { id: 's_8_I6_s0A', title: 'Alexandra - Mein Freund, der Baum', year: 1968 },
+                { id: 'cOVzXYEU3Bk', title: 'Iron Maiden - Wasted years', year: 1986 },
+                { id: 'A_MjCqQoLLA', title: 'The Beatles - Hey Jude', year: 1968 },
+                { id: 'gGdGFtwCNBE', title: 'The Killers - Mr. Brightside', year: 2003 },
+                { id: 'Lo2qQmj0_h4', title: 'AC/DC - You shook me all night long', year: 1980 },
+                { id: 'a01QQZyl-_I', title: 'Queen & David Bowie - Under pressure', year: 1981 },
+                { id: 'g_8_I6_s0A', title: 'Deep Purple - Perfect strangers', year: 1984 },
+                { id: 'd_8_I6_s0A', title: 'Lady Gaga & Bruno Mars - Die with a smile', year: 2024 },
+                { id: 'b-7c4VNGOgU', title: 'Cat Stevens - Father and son', year: 1970 },
+                { id: 'Ti_8_I6_s0A', title: 'Herbert Grönemeyer - Bochum', year: 1984 },
+                { id: 'zUwEIt9ez7M', title: 'Deep Purple - Smoke on the water', year: 1972 },
+                { id: 'P_8_I6_s0A', title: 'Seiler und Speer - Ham kummst', year: 2015 },
+                { id: 'bWXazVhlyxQ', title: 'Rage Against The Machine - Killing in the name', year: 1992 },
+                { id: 'qQzdAsjWGPg', title: 'Frank Sinatra - My way', year: 1969 },
+                { id: 'o_8_I6_s0A', title: 'Accept - Princess of the dawn', year: 1982 },
+                { id: 't99KH0TR-J4', title: 'Queen - The show must go on', year: 1991 },
+                { id: 'm_8_I6_s0A', title: 'STS - Großvater', year: 1984 },
+                { id: 'Wr9ie2J2690', title: 'Deep Purple - Highway star', year: 1972 },
+                { id: 'CSvFpBOe8eY', title: 'System Of A Down - Chop Suey!', year: 2001 },
+                { id: 'p_8_I6_s0A', title: 'Nina Hagen - Du hast den Farbfilm vergessen', year: 1974 },
+                { id: 'Ophelia_TaylorSwift', title: 'Taylor Swift - The fate of ophelia', year: 2025 },
+                { id: 'Lur-SGl3uw8', title: 'Nena - 99 Luftballons', year: 1983 },
+                { id: 'T_8_I6_s0A', title: 'Zartmann - Tau mich auf', year: 2024 },
+                { id: '1w7OgIMMRc4', title: 'Guns N\' Roses - Sweet child o\' mine', year: 1987 },
+                { id: 'bkysjcs5vFU', title: 'Dio - Holy diver', year: 1983 },
+                { id: 'DeumyOzKq4I', title: 'Adele - Skyfall', year: 2012 },
+                { id: '2G5rfPISIwo', title: 'Iron Maiden - The trooper', year: 1983 },
+                { id: 'b_8_I6_s0A', title: 'Karat - Der blaue Planet', year: 1981 },
+                { id: 'k_8_I6_s0A', title: 'Karat - Über sieben Brücken mußt du gehen', year: 1978 },
+                { id: 'JxPj3GAYYZ0', title: 'Eric Clapton - Tears in heaven', year: 1992 },
+                { id: 'haEcj_I6_s0', title: 'Helene Fischer - Atemlos durch die Nacht', year: 2013 },
+                { id: 'LQUXuQ6Zd9w', title: 'Black Sabbath - War pigs', year: 1970 },
+                { id: '5IpYOF4Hi6E', title: 'Pink Floyd - Another brick in the wall', year: 1979 },
+                { id: 'i_8_I6_s0A', title: 'CYRIL - Stumblin\' in', year: 1978 },
+                { id: 'r_8_I6_s0A', title: 'Rainbow - Stargazer', year: 1976 },
+                { id: 'f_8_I6_s0A', title: 'Joe Bonamassa & Beth Hart - I\'d rather go blind', year: 1968 },
+                { id: 'rYEDA3JcQqw', title: 'Adele - Rolling in the deep', year: 2010 },
+                { id: 'h_8_I6_s0A', title: 'Udo Lindenberg - Hinter dem Horizont', year: 1986 },
+                { id: 'G7KNmW9a75Y', title: 'Miley Cyrus - Flowers', year: 2023 },
+                { id: 'j_8_I6_s0A', title: 'Herbert Grönemeyer - Musik nur, wenn sie laut ist', year: 1983 },
+                { id: 'Vppbdf-qtGU', title: 'ZZ Top - La grange', year: 1973 },
+                { id: 'w_8_I6_s0A', title: 'Fools Garden - Lemon tree', year: 1995 },
+                { id: 'Mln0RciE2o0', title: 'Led Zeppelin - Whole lotta love', year: 1969 },
+                { id: 'XmSdTa9kaiQ', title: 'U2 - With or without you', year: 1987 },
+                { id: 'q_8_I6_s0A', title: 'Helloween - Keeper of the seven keys', year: 1987 },
+                { id: 'c_8_I6_s0A', title: 'BAP - Kristallnaach', year: 1982 },
+                { id: '3-dsL-I6_s0', title: 'Rod Stewart - Sailing', year: 1972 },
+                { id: '8j_I6_s0A', title: 'Mike Oldfield - Tubular Bells Part one', year: 1973 },
+                { id: 'azdwsXLmrHE', title: 'Queen - Radio ga ga', year: 1984 }
+            ]
+        });
+
+        PLAYLISTS.push({
+            name: "SWR1 Hitparade 201-300",
+            id: "swr1-hitparade-201-300",
+            songs: [
+                { id: 'lcOxhH8N3Bo', title: 'Bonnie Tyler - Total eclipse of the heart', year: 1983 },
+                { id: 'mG_d-L2C2oI', title: 'Pur - Funkelperlenaugen', year: 1988 },
+                { id: 'np4yCVlX25E', title: 'Manowar - Kings of Metal', year: 1988 },
+                { id: 'Rbm6GXllBiw', title: 'Guns N\' Roses - Paradise city', year: 1987 },
+                { id: 'i8Q5qC2i8-M', title: 'Pur - Lena', year: 1991 },
+                { id: 'NrgmdOz227I', title: 'The Beatles - Yesterday', year: 1965 },
+                { id: 'QxIWDmmqZzY', title: 'Lynyrd Skynyrd - Free bird', year: 1973 },
+                { id: 'MGeIS1b0pY0', title: 'Herbert Grönemeyer - Halt mich', year: 1984 },
+                { id: '-tJYN-eG1zk', title: 'Queen - We will rock you', year: 1977 },
+                { id: '_OO2PuGz-H8', title: 'Peter Gabriel - Solsbury Hill', year: 1977 },
+                { id: 'Dk4bM92-3w4', title: 'Sarah Connor - Vincent', year: 2019 },
+                { id: 'k6j1Xn30T60', title: 'Ludwig Hirsch - Komm, großer, schwarzer Vogel', year: 1979 },
+                { id: 'sZfZ8uWaOFI', title: 'Aerosmith - Dream on', year: 1973 },
+                { id: 'x-G28iyPtz0', title: 'Kraftwerk - Autobahn', year: 1974 },
+                { id: 'Cy9-Y8vrt4o', title: 'AC/DC - Whole lotta Rosie', year: 1977 },
+                { id: 'RMR5zf1J1Qg', title: 'Ozzy Osbourne - Crazy train', year: 1980 },
+                { id: 'hLQl3WQQoQ0', title: 'Adele - Someone like you', year: 2011 },
+                { id: 'Jsj-37UrxeM', title: 'Liquido - Narcotic', year: 1998 },
+                { id: 'TvR6d08L3nc', title: 'Beggars Opera - Time machine', year: 1971 },
+                { id: 'djV11Xbc914', title: 'a-ha - Take on me', year: 1985 },
+                { id: 'VlF9tC0h5k8', title: 'Die Toten Hosen - Bonnie & Clyde', year: 1996 },
+                { id: 'N17Q2V-T8t4', title: 'Johannes Oerding - An guten Tagen', year: 2019 },
+                { id: '9bxc9hwb9js', title: 'Westlife - You raise me up', year: 2005 },
+                { id: '8t3-F_w-g8Q', title: 'Wolle Kriwanek - Reggae di uf', year: 1982 },
+                { id: 'tJjI6tYfWbU', title: 'Udo Lindenberg - Durch die schweren Zeiten', year: 2016 },
+                { id: 'qP-7GNoDJ5c', title: 'Nathan Evans - Wellerman', year: 2021 },
+                { id: '7XzLbGssArQ', title: 'Die Ärzte - Junge', year: 2007 },
+                { id: 'x2rQzv8OWEY', title: 'Rammstein - Engel', year: 1997 },
+                { id: 'X-77txuiVXs', title: 'Die Toten Hosen - Nur zu Besuch', year: 2002 },
+                { id: '3QGMCSCFoKA', title: 'Meat Loaf - Bat out of hell', year: 1977 },
+                { id: 'ekr2nIex040', title: 'Rosé & Bruno Mars - APT.', year: 2024 },
+                { id: 'nrIPxlFzDi0', title: 'The Rolling Stones - (I can\'t get no) Satisfaction', year: 1965 },
+                { id: 'z-mFj9a9y4Q', title: 'Hank Häberle jr - I fahr GTI', year: 1991 },
+                { id: 'qO-mSLxih-c', title: 'Metallica - Turn the page', year: 1998 },
+                { id: '3c8p2V-J2jQ', title: 'Heinz Rudolf Kunze - Dein ist mein ganzes Herz', year: 1985 },
+                { id: 'p9Fyib7NZAA', title: 'Nightwish - Sleeping sun', year: 1999 },
+                { id: 'KLVq0IGnCd0', title: 'Sting - Fields of gold', year: 1993 },
+                { id: 'yKNxeF4KMsY', title: 'Coldplay - Yellow', year: 2000 },
+                { id: 'H9694K85-2o', title: 'Supertramp - School', year: 1974 },
+                { id: 'tF6ZtqGz5-U', title: 'Hubert von Goisern - Brenna tuats guat', year: 2011 },
+                { id: '8t3-F_w-g8Q2', title: 'Wolle Kriwanek - Ufo', year: 1982 },
+                { id: 'Fk0V_GGa2XM', title: 'Pink Floyd - Atom heart mother', year: 1970 },
+                { id: 'g2N0TkfrQhY', title: 'Queen - Innuendo', year: 1991 },
+                { id: 'Gv_8_I6_s0A', title: 'AnnenMayKantereit - Tommi', year: 2018 },
+                { id: 'GgnClrx8N2k', title: 'The Rolling Stones - Sympathy for the devil', year: 1968 },
+                { id: 'fd_rop9vDwI', title: 'Charles Trenet - La mer', year: 1946 },
+                { id: 'yl7gA0222g4', title: 'Gotthard - Heaven', year: 2000 },
+                { id: 'ftjE60rJP2s', title: 'U2 - One', year: 1991 },
+                { id: 'W_f8_I6_s0A', title: 'Puhdys - Alt wie ein Baum', year: 1976 },
+                { id: 'eAR_Ff5A8Rk', title: 'Carole King - You\'ve got a friend', year: 1971 },
+                { id: 'E8gmARGvPlI', title: 'Wham! - Last Christmas', year: 1984 },
+                { id: '9zW9_I6_s0A', title: 'Eva Cassidy - Fields of gold', year: 1996 },
+                { id: '-sUXMzkh-jI', title: 'AC/DC - It\'s a long way to the top', year: 1975 },
+                { id: 'vt1Pwfnh5pc', title: 'Johnny Cash - Hurt', year: 2002 },
+                { id: 'u_tORtmKIjE', title: 'Blind Guardian - The bard\'s song (in the forest)', year: 1992 },
+                { id: '_Yhyp-_hX2s', title: 'Eminem - Lose yourself', year: 2002 },
+                { id: 'qN4ooNx77u0', title: 'Harry Styles - Sign of the times', year: 2017 },
+                { id: 'Tm88QAI8I5A', title: 'ZAZ - Je veux', year: 2010 },
+                { id: '9X_ViIPA-Gc', title: 'Meat Loaf - I\'d do anything for love', year: 1993 },
+                { id: 'ZGoWtY_h4xo', title: 'Bryan Adams - (Everything I Do) I Do It For You', year: 1991 },
+                { id: 'Urw-iutHw5E', title: 'Falco - Jeanny (Part I)', year: 1985 },
+                { id: 'y8AWFf7Zgbk', title: 'Jeff Buckley - Hallelujah', year: 1994 },
+                { id: 'CmELf8DJAVY', title: 'Kiss - I was made for lovin\' you', year: 1979 },
+                { id: 'Z_8_I6_s0A', title: 'Holstuonarmusigbigbandclub - Vo Mello bis ge Schoppornou', year: 2010 },
+                { id: 'U_8_I6_s0A', title: 'Udo Jürgens & Jenny - Liebe ohne Leiden', year: 1984 },
+                { id: 'wp43OdtAAkM', title: 'Kate Bush - Running Up That Hill', year: 1985 },
+                { id: 'lB6a-iD6ZOY', title: 'Sting - Fragile', year: 1987 },
+                { id: 'SwYN7mTi6HM', title: 'Van Halen - Jump', year: 1983 },
+                { id: 'snILjFUkk_A', title: 'Depeche Mode - Never let me down again', year: 1987 },
+                { id: 'r8OipmKFDeM', title: 'Oasis - Don\'t look back in anger', year: 1995 },
+                { id: 'GC5E8ie2pdM', title: 'Tina Turner - The best', year: 1989 },
+                { id: 'Ccs2rt0oSzQ', title: 'Genesis - Mama', year: 1983 },
+                { id: 'K_8_I6_s0A', title: 'Hubert von Goisern - Da Juchitzer', year: 1992 },
+                { id: 'OQZAosZ3gKs', title: 'Marillion - Kayleigh', year: 1985 },
+                { id: '9m7tPikH0UA', title: 'Toy Dolls - Nellie the elephant', year: 1984 },
+                { id: 'V1bFr2SWP1I', title: 'Israel Kamakawiwo\'ole - Somewhere over the rainbow', year: 1993 },
+                { id: 'ARt9HV9T0w8', title: 'Gloria Gaynor - I will survive', year: 1978 },
+                { id: 'Q_8_I6_s0A', title: 'Karat - Schwanenkönig', year: 1980 },
+                { id: 'TJAfLE39ZZ8', title: 'Amy Winehouse - Back to black', year: 2006 },
+                { id: 'H_8_I6_s0A', title: 'Klaus Lage - 1000 und 1 Nacht', year: 1984 },
+                { id: 'cyrdPtEHKzE', title: 'Falco - Out Of The Dark', year: 1998 },
+                { id: 'E_8_I6_s0A', title: 'Wise Guys - Deutsche Bahn', year: 2012 },
+                { id: 'sfjon-ZTqzU', title: 'Janis Joplin - Me and Bobby McGee', year: 1971 },
+                { id: 'b2_8_I6_s0A', title: 'Cockney Rebel - Sebastian', year: 1973 },
+                { id: '2tmc8rJlxqg', title: 'Guns N\' Roses - Knockin\' on heaven\'s door', year: 1991 },
+                { id: 'I2_8_I6_s0A', title: 'Johnny Cash - One', year: 2000 },
+                { id: 'GemKqzILV4w', title: 'Snow Patrol - Chasing cars', year: 2006 },
+                { id: '3f2g4RMfhS0', title: 'AC/DC - Let there be Rock', year: 1977 },
+                { id: 'J2_8_I6_s0A', title: 'Pur - Wenn sie diesen Tango hört', year: 1993 },
+                { id: 'k2_8_I6_s0A', title: 'Reinhard Mey - Sommermorgen', year: 1980 },
+                { id: 'XAi3VTSdTxU', title: 'Michael Jackson - Earth song', year: 1995 },
+                { id: 'JGftIcp2SC0', title: 'AC/DC - Touch too much', year: 1979 },
+                { id: 'TLV4_xaYynY', title: 'The Jimi Hendrix Experience - All along the watchtower', year: 1968 },
+                { id: 'Li_8_I6_s0A', title: 'Die Toten Hosen - Alles aus Liebe', year: 1993 },
+                { id: 'RbmS3tQJ7Os', title: 'The Rolling Stones - Gimme shelter', year: 1969 },
+                { id: '6NXnxTNIWkc', title: '4 Non Blondes - What\'s Up?', year: 1992 },
+                { id: '8t3-F_w-g8Q3', title: 'Wolle Kriwanek - I fahr Daimler', year: 1982 },
+                { id: 'M2_8_I6_s0A', title: 'Peter Maffay - Eiszeit', year: 1982 },
+                { id: 'L2_8_I6_s0A', title: 'Pur - Ein graues Haar', year: 1995 },
+                { id: 'p2_8_I6_s0A', title: 'ABBA - Slipping through my fingers', year: 1981 }
+            ]
+        });
+
+        PLAYLISTS.push({
+            name: "SWR1 Hitparade 301-400",
+            id: "swr1-hitparade-301-400",
+            songs: [
+                { id: 'p6n1C6H3VlU', title: 'Runrig - Hearts of olden glory', year: 1987 },
+                { id: 'Bemberle_VideoID', title: 'Herrn Stumpfes Zieh & Zupfkapelle - Bemberle', year: 1993 },
+                { id: 'p4QqMKe3rwY', title: 'ABBA - Chiquitita', year: 1979 },
+                { id: '5s7_W78Gna0', title: 'Black Sabbath - Iron man', year: 1970 },
+                { id: 'yJjLhG2M77s', title: 'Peter Maffay - Und es war Sommer', year: 1976 },
+                { id: 'CjT8c-zU01o', title: 'Scorpions - Still loving you', year: 1984 },
+                { id: 'Paedagogen_Lumpenpack', title: 'Das Lumpenpack - Pädagogen', year: 2017 },
+                { id: 'ojf18wT_XVk', title: 'Pink Floyd - On the turning away', year: 1987 },
+                { id: 'G3LvhdFEOqs', title: 'Ozzy Osbourne - Mister Crowley', year: 1980 },
+                { id: 's_s8lM04aOM', title: 'Pink Floyd - Us and them', year: 1973 },
+                { id: '0gn3W6fF4sM', title: 'Fleetwood Mac - Go your own way', year: 1976 },
+                { id: 'vUSzL2leaFM', title: 'Eric Clapton - Wonderful tonight', year: 1977 },
+                { id: '34KqBaqfRjM', title: 'Santana - Samba pa ti', year: 1970 },
+                { id: 'Vq9_x0z8U', title: 'Rio Reiser - Junimond', year: 1986 },
+                { id: 'Zf53Pg2AkdY', title: 'Golden Earring - Radar love', year: 1973 },
+                { id: '77gKSp8WoRg', title: 'Bruce Springsteen - My hometown', year: 1984 },
+                { id: 'Video_Udo_ImmerWieder', title: 'Udo Jürgens - Immer wieder geht die Sonne auf', year: 1967 },
+                { id: 'req-oDf2-WM', title: 'Accept - Metal heart', year: 1985 },
+                { id: 'gm5F1-cV1_4', title: 'Melissa Etheridge - Like the way I do', year: 1988 },
+                { id: 'Wunder_AylivaApache', title: 'Ayliva & Apache 207 - Wunder', year: 2024 },
+                { id: '129kuDCQtHs', title: 'Bruce Springsteen - Dancing in the dark', year: 1984 },
+                { id: 'f4Mc-NYPHaQ', title: 'Queen - I want to break free', year: 1984 },
+                { id: '9d8SzG4FPyM', title: 'Dropkick Murphys - Rose Tattoo', year: 2013 },
+                { id: 'GlPlfCy1urI', title: 'Elton John - Your song', year: 1970 },
+                { id: 'P10O8l-Y_14', title: 'Fleetwood Mac - The chain', year: 1977 },
+                { id: 'HeavyCrown_LP', title: 'Linkin Park - Heavy is the crown', year: 2024 },
+                { id: 'cO_2W_F1_4', title: 'Fury In The Slaughterhouse - Time to wonder', year: 1988 },
+                { id: 'd27gTrPPAqk', title: 'Sting - Englishman in New York', year: 1987 },
+                { id: 'SkySand_Kalkbrenner', title: 'Paul Kalkbrenner - Sky and sand', year: 2008 },
+                { id: 'Gs069dndIYk', title: 'Earth, Wind & Fire - September', year: 1978 },
+                { id: 'jhat-xUQ6dw', title: 'Queensrÿche - Silent lucidity', year: 1990 },
+                { id: 'CarryOn_Manowar', title: 'Manowar - Carry on', year: 1987 },
+                { id: 'Troy_Fanta4', title: 'Die Fantastischen Vier - Troy', year: 2004 },
+                { id: 'oxHnRfhDmrk', title: 'Don McLean - Vincent', year: 1971 },
+                { id: 'STS_Irgendwann', title: 'STS - Irgendwann bleib i dann dort', year: 1984 },
+                { id: '_HkL8GuKbMI', title: 'ABBA - I have a dream', year: 1979 },
+                { id: 'kijpcUv-b8M', title: 'Queen - Somebody to love', year: 1976 },
+                { id: 't-8K8Hj8cxE', title: 'Héroes Del Silencio - Entre dos tierras', year: 1990 },
+                { id: 'sU9fClBc-zE', title: 'Queen - These are the days of our lives', year: 1991 },
+                { id: 'l3LFML_pxlY', title: 'Simon & Garfunkel - The boxer', year: 1969 },
+                { id: 'TheJack_ACDC', title: 'AC/DC - The Jack', year: 1975 },
+                { id: 'nC-3d92-2o', title: 'ABBA - Our last summer', year: 1980 },
+                { id: 'NdYWuo9OFAw', title: 'The Goo Goo Dolls - Iris', year: 1998 },
+                { id: 'vx2u5uUu3DE', title: 'Bon Jovi - It\'s my life', year: 2000 },
+                { id: 'u1xrNaTO1bI', title: 'Depeche Mode - Personal Jesus', year: 1989 },
+                { id: 'Mb3iPP-tHdA', title: 'Procol Harum - A whiter shade of pale', year: 1967 },
+                { id: 'BshxCIjNEjY', title: 'ABBA - Super Trouper', year: 1980 },
+                { id: 'SomebodyGM_Queen', title: 'George Michael & Queen - Somebody to love', year: 1993 },
+                { id: 'B_3_I6_s0A', title: 'Accept - Balls to the wall', year: 1983 },
+                { id: 'Leningrad_BillyJoel', title: 'Billy Joel - Leningrad', year: 1989 },
+                { id: '6hzrDeceEKc', title: 'Oasis - Wonderwall', year: 1995 },
+                { id: 'riwxbh_n_WM', title: 'Black Sabbath - Heaven and hell', year: 1980 },
+                { id: 'Schmuddelkinder_Video', title: 'Franz Josef Degenhardt - Spiel nicht mit den Schmuddelkindern', year: 1965 },
+                { id: 'Apfelbaum_Mey', title: 'Reinhard Mey - Mein Apfelbäumchen', year: 1989 },
+                { id: 'Rain_JermainePia', title: 'Jermaine Jackson & Pia Zadora - When the rain begins to fall', year: 1984 },
+                { id: 'Kneipe_PeterAlexander', title: 'Peter Alexander - Die kleine Kneipe', year: 1976 },
+                { id: 'CWzrABouyeE', title: 'Louis Armstrong - What a wonderful world', year: 1967 },
+                { id: 'Cello_UdoClueso', title: 'Udo Lindenberg feat. Clueso - Cello', year: 2011 },
+                { id: 'Tm8LGxTLtAU', title: 'Linkin Park - One more light', year: 2017 },
+                { id: 'Hiroshima_Wishful', title: 'Wishful Thinking - Hiroshima', year: 1971 },
+                { id: 'Ri7-vnrJD3k', title: 'Adele - Set fire to the rain', year: 2011 },
+                { id: 'Jupp_BAP', title: 'BAP - Jupp', year: 1982 },
+                { id: 'BW3gKKiTvjs', title: 'Kate Bush - Wuthering heights', year: 1978 },
+                { id: 'y8OtzJtp-EM', title: 'Led Zeppelin - Immigrant Song', year: 1970 },
+                { id: 'g1s47L8DrJ0', title: 'Bob Dylan - Like a rolling stone', year: 1965 },
+                { id: 'SchwabenRap_Friedi', title: 'Friedi - Schwaben-Rap', year: 2010 },
+                { id: 'eHQG6-DojVw', title: 'Katie Melua - Nine million bicycles', year: 2005 },
+                { id: '09LTT0xwdfw', title: 'Disturbed - Down with the sickness', year: 2000 },
+                { id: 'FeelsLike_Coldplay', title: 'Coldplay - Feelslikeimfallinginlove', year: 2024 },
+                { id: '0OfXaK1-w-U', title: 'Queen - Friends will be friends', year: 1986 },
+                { id: 'Cornelius_KennDi', title: 'Peter Cornelius - Du entschuldige - i kenn\' di', year: 1980 },
+                { id: 'Maenner_Groenemeyer', title: 'Herbert Grönemeyer - Männer', year: 1984 },
+                { id: 'Miley_EndWorld', title: 'Miley Cyrus - End of the world', year: 2025 },
+                { id: 'Skandal_SpiderMurphy', title: 'Spider Murphy Gang - Skandal im Sperrbezirk', year: 1981 },
+                { id: 'SoBistDu_Maffay', title: 'Peter Maffay - So bist du', year: 1979 },
+                { id: 'sOnqjkJTMaA', title: 'Michael Jackson - Thriller', year: 1982 },
+                { id: 'VJDJs9dumZI', title: 'The Beatles - While my guitar gently weeps', year: 1968 },
+                { id: 'Koenig_Rio', title: 'Rio Reiser - König von Deutschland', year: 1986 },
+                { id: 'SloeGin_Bonamassa', title: 'Joe Bonamassa - Sloe gin', year: 2007 },
+                { id: 's86K-p089R8', title: 'Bon Jovi - Runaway', year: 1984 },
+                { id: 'xwtdhWltSIg', title: 'R.E.M. - Losing my religion', year: 1991 },
+                { id: 'Bologna_Wanda', title: 'Wanda - Bologna', year: 2014 },
+                { id: '2K_3_I6_s0A', title: 'Neil Diamond - Sweet Caroline', year: 1969 },
+                { id: 'VPRjCeoBqrI', title: 'Coldplay - A sky full of stars', year: 2014 },
+                { id: 'MeinDing_Udo', title: 'Udo Lindenberg - Mein Ding', year: 2008 },
+                { id: '4z2DtNW79sQ', title: 'Bruce Springsteen - Streets of Philadelphia', year: 1994 },
+                { id: 'BrainDamage_Floyd', title: 'Pink Floyd - Brain damage', year: 1973 },
+                { id: 'Pink_MrPresident', title: 'P!nk (Pink) feat. Indigo Girls - Dear Mr. President', year: 2006 },
+                { id: 'hWGWFa3jznI', title: 'ABBA - Don\'t shut me down', year: 2021 },
+                { id: 'Sascha_Hosen', title: 'Die Toten Hosen - Sascha... ein aufrechter Deutscher', year: 1992 },
+                { id: 'C21G2OkHEYo', title: 'John Denver - Annie\'s song', year: 1974 },
+                { id: 'RxOBOhRECoo', title: 'Elvis Presley - Suspicious minds', year: 1969 },
+                { id: 'L397TWLwrUU', title: 'Judas Priest - Breaking the law', year: 1980 },
+                { id: 'pAzEY1zHVbk', title: 'ABBA - I still have faith in you', year: 2021 },
+                { id: 'dDI7x1nwG1E', title: 'ABBA - Eagle', year: 1977 },
+                { id: '4zAThXFOy2c', title: 'Chris Stapleton - Tennessee whiskey', year: 2015 },
+                { id: 'h5egObi-uFg', title: 'Sia - Unstoppable', year: 2016 },
+                { id: 'Draegglacha_Grach', title: 'Grachmusikoff - Drägglacha Blues', year: 1980 },
+                { id: 'WieSchoen_Sarah', title: 'Sarah Connor - Wie schön du bist', year: 2015 },
+                { id: 'RomeoJuliet_DS', title: 'Dire Straits - Romeo and Juliet', year: 1980 }
+            ]
+        });
+
+        PLAYLISTS.push({
+            name: "Deutsche Schlager & Kult-Hits",
+            id: "schlager-kult-hits",
+            songs: [
+                // --- DIE PARTY-HITS (mit Live/TV Versionen) ---
+                { id: '3XqjQZpC6Zk', title: 'Helene Fischer - Atemlos durch die Nacht', year: 2013 }, // Live
+                { id: 'D8hAhqDcVRA', title: 'Udo Jürgens - Griechischer Wein', year: 1974 }, // ZDF Hitparade
+                { id: '8HIfGnSJwmo', title: 'Marianne Rosenberg - Er gehört zu mir', year: 1975 },
+                { id: 'lJqbaGbC350', title: 'Jürgen Drews - Ein Bett im Kornfeld', year: 1976 },
+                { id: '1Hcrc4Z2Z68', title: 'Wolfgang Petry - Wahnsinn', year: 1983 },
+                { id: 'g0R4qcoBUUg', title: 'Matthias Reim - Verdammt, ich lieb\' dich', year: 1990 },
+                { id: 'WnL-9t9X5Fk', title: 'Roland Kaiser - Santa Maria', year: 1980 },
+                { id: 'AxCGwd2XQvQ', title: 'Klaus Lage Band - 1000 und 1 Nacht', year: 1984 }, // Topic
+                { id: '05Or8Ymk5XI', title: 'Drafi Deutscher - Marmor, Stein und Eisen bricht', year: 1965 },
+                { id: 'eLqvX3g-940', title: 'Reinhard Mey - Über den Wolken', year: 1974 },
+                { id: 'j09hpp3AxIE', title: 'Die Toten Hosen - Tage wie diese', year: 2012 },
+                { id: 'x3M3DR6OKTk', title: 'Rex Gildo - Fiesta Mexicana', year: 1972 },
+                { id: 't6W8N5JpA5k', title: 'Rainhard Fendrich - Weus\'d a Herz hast wie a Bergwerk', year: 1984 },
+                { id: 'PPGEGxBI-Ko', title: 'Udo Jürgens - Ich war noch niemals in New York', year: 2001 },
+                { id: 'B0e4M9zPz7c', title: 'Howard Carpendale - Ti Amo', year: 1977 },
+                { id: '4s6R62sXoGg', title: 'Andrea Berg - Du hast mich tausendmal belogen', year: 2001 },
+                { id: 'M_j3_j_I7s0', title: 'Hannes Wader - Heute hier, morgen dort', year: 1972 },
+                { id: 'L09SgA-vA-g', title: 'Spider Murphy Gang - Skandal im Sperrbezirk', year: 1981 },
+                { id: '7X9_6q_I8jA', title: 'Münchener Freiheit - Ohne Dich', year: 1985 },
+                { id: 'NvS351QKFV4', title: 'Dschinghis Khan - Moskau', year: 1979 },
+
+                // --- 70er & 80er KULT (TV & Live Ersatz) ---
+                { id: 'Lp5X-yqPhItr', title: 'Michael Holm - Mendocino', year: 1969 },
+                { id: 'LndPi6c10RU', title: 'Karel Gott - Die Biene Maja', year: 1977 },
+                { id: 'Beyr-q9LwO4', title: 'Costa Cordalis - Anita', year: 1976 },
+                { id: '8-2asjlBFIs', title: 'Heino - Blau blüht der Enzian', year: 1972 },
+                { id: 'YQZSJZFl3NI', title: 'Udo Jürgens - Aber bitte mit Sahne', year: 1976 }, // Topic
+                { id: '7k0ZD2P_jRc', title: 'Howard Carpendale - Hello Again', year: 1984 },
+                { id: 'N1-N2L-JcTE', title: 'Nino de Angelo - Jenseits von Eden', year: 1983 },
+                { id: 'LmCQO7BSb2A', title: 'Michael Holm - Tränen lügen nicht', year: 1974 }, // Topic
+                { id: 'JsPiUDBbluQ', title: 'Katja Ebstein - Wunder gibt es immer wieder', year: 1970 },
+                { id: 'CZUBX5u4fZc', title: 'Manuela - Schuld war nur der Bossa Nova', year: 1963 }, // Topic
+                { id: 'TTqhkeoMKYc', title: 'Siw Malmkvist - Liebeskummer lohnt sich nicht', year: 1964 }, // Topic
+                { id: 'fjc3uwYCdmM', title: 'Henry Valentino - Im Wagen vor mir', year: 1977 },
+                { id: 'eTtuNh5EuQI', title: 'Gebrüder Blattschuss - Kreuzberger Nächte', year: 1978 },
+                { id: 'z-mFj9a9y4Q', title: 'Wolfgang Fierek - Resi, i hol di mit meim Traktor ab', year: 1985 },
+                { id: 'yaP5cvNro-c', title: 'Cora - Amsterdam', year: 1984 },
+                { id: 'VJgUoR9eHqQ', title: 'Hoffmann & Hoffmann - Himbeereis zum Frühstück', year: 1977 }, // Topic
+                { id: 'pa_Y9O7uHRo', title: 'Nicole - Ein bißchen Frieden', year: 1982 }, // ESC Live
+                { id: 'wO1X-5yM81E', title: 'Peter Schilling - Major Tom', year: 1982 },
+                { id: '9whehyybLqU', title: 'Nena - 99 Luftballons', year: 1983 },
+                { id: 'br3-F_w-g8Q', title: 'Geier Sturzflug - Bruttosozialprodukt', year: 1983 },
+                { id: 'hSlkjRO_tyU', title: 'Hubert Kah - Sternenhimmel', year: 1982 }, // Topic
+                { id: 'O3r3oD7s10k', title: 'Peter Schilling - Völlig losgelöst', year: 1982 },
+                { id: '54j8PQkmdPI', title: 'Pur - Lena', year: 1991 }, // Live 2024
+                { id: 'SMlSeYOLkP8', title: 'Die Flippers - Die rote Sonne von Barbados', year: 1986 },
+                { id: 'aP0hV9m-tW8', title: 'Vicky Leandros - Theo, wir fahr\'n nach Lodz', year: 1974 },
+                { id: 'X1O-dD_fQP0', title: 'Mike Krüger - Der Nippel', year: 1980 },
+                { id: 'HPZX7EZIFD0', title: 'Guildo Horn - Guildo hat euch lieb!', year: 1998 },
+                { id: 'bZVSniwao7g', title: 'Hallervorden/Feddersen - Du, die Wanne ist voll', year: 1978 },
+                { id: 'Kk42LZqO0wA', title: 'Reinhard Mey - Gute Nacht, Freunde', year: 1972 },
+                { id: '6K7p5w7NypA', title: 'Udo Jürgens - Mit 66 Jahren', year: 1977 }, // Live 2001
+
+                // --- 90er, 2000er & MODERNE ---
+                { id: 'Jo6kK0y_k_k', title: 'Maite Kelly & Roland Kaiser - Warum hast du nicht nein gesagt', year: 2014 },
+                { id: 'XhBXG0ier4s', title: 'Kerstin Ott - Die immer lacht', year: 2016 },
+                { id: 'sLpI4E6gE4M', title: 'Andreas Gabalier - Hulapalu', year: 2015 },
+                { id: 'poaWXBg5buE', title: 'DJ Ötzi - Ein Stern (der deinen Namen trägt)', year: 2007 },
+                { id: 'GUR7Dfzr0I0', title: 'DJ Ötzi - Anton aus Tirol', year: 1999 },
+                { id: 'hChWC3L2teQ', title: 'Die Höhner - Viva Colonia', year: 2003 },
+                { id: 'K_i4V20-1qA', title: 'Olaf Henning - Cowboy und Indianer', year: 2006 },
+                { id: 'i-yW7j_wZ_g', title: 'Mickie Krause - Schatzi schenk mir ein Foto', year: 2010 },
+                { id: 'k9Z_G9a6Z-g', title: 'Tim Toupet - ...So ein schöner Tag (Fliegerlied)', year: 2008 },
+                { id: 'D9VRD6RIpVw', title: 'Helene Fischer - Herzbeben', year: 2017 },
+                { id: 't72UXnxrg3Q', title: 'Pur - Party Mix (Hitmix)', year: 2000 }, // User Upload
+                { id: '3h3idm_-J_g', title: 'Pur - Abenteuerland', year: 1995 },
+                { id: 'PzANzii_7JI', title: 'Rosenstolz - Ich bin ich', year: 2006 }, // Official
+                { id: '9o4fDVYc_cQ', title: 'Xavier Naidoo - Dieser Weg', year: 2005 }, // Topic
+                { id: 'Wk9hJ7hJk1k', title: 'Sportfreunde Stiller - Ein Kompliment', year: 2002 },
+                { id: 'eFkI5h3UtWU', title: 'Juli - Perfekte Welle', year: 2004 },
+                { id: 'kB_39p1k0ZI', title: 'Silbermond - Symphonie', year: 2004 },
+                { id: 'cDoHZb9vCs4', title: 'Ich + Ich - Vom selben Stern', year: 2007 },
+                { id: 'g_OhkvCTnsw', title: 'Las Ketchup - The Ketchup Song', year: 2002 },
+                { id: 'scX_1n98KXA', title: 'Lou Bega - Mambo No. 5', year: 1999 },
+
+                // --- VOLKSMUSIK & KLASSIKER (Repariert) ---
+                { id: 'Q7u2x-m_p90', title: 'Heino - Das Kufsteinlied', year: 1969 },
+                { id: 'F0eP6Z3fWnI', title: 'Zillertaler Schürzenjäger - Sierra Madre', year: 1987 },
+                { id: 'P8Q5j9k_Z_s', title: 'Hubert von Goisern - Koa Hiatamadl', year: 1992 },
+                { id: 'pp7I7hZ-g5w', title: 'Voxxclub - Rock Mi', year: 2013 },
+                { id: 'f5E5z0Y1k4g', title: 'Roy Black - Ganz in Weiß', year: 1966 },
+                { id: 'M3y4P-1l9oA', title: 'Peter Alexander - Die kleine Kneipe', year: 1976 },
+                { id: 'u3k2Z-6m9pA', title: 'Wencke Myhre - Er hat ein knallrotes Gummiboot', year: 1970 },
+                { id: 'q9X4M-2j8kA', title: 'Bill Ramsey - Ohne Krimi geht die Mimi nie ins Bett', year: 1962 },
+                { id: 'y1L5O-3n8qA', title: 'Trude Herr - Ich will keine Schokolade', year: 1960 },
+                { id: 'z8K6P-4m9rA', title: 'Conny Froboess - Zwei kleine Italiener', year: 1962 },
+                { id: 'w2N7L-5k9sA', title: 'Gitte Haenning - Ich will \'nen Cowboy als Mann', year: 1963 },
+                { id: 'x5J8M-6l9tA', title: 'Cliff Richard - Rote Lippen soll man küssen', year: 1963 },
+                { id: 'pxO7k8MzpyQ', title: 'Gus Backus - Da sprach der alte Häuptling', year: 1961 }, // Topic
+                { id: 'CJXinvlxfhg', title: 'Freddy Quinn - Junge, komm bald wieder', year: 1962 }, // Topic
+                { id: 'm93AEDMnGRc', title: 'Nana Mouskouri - Weiße Rosen aus Athen', year: 1961 }, // Topic
+                { id: 'LM8zWTZXq9U', title: 'Hildegard Knef - Für mich soll\'s rote Rosen regnen', year: 1968 }, // Topic
+                { id: 'CtDxad2-WPY', title: 'Karat - Über sieben Brücken mußt du geh\'n', year: 1978 }, // Topic
+                { id: 'WH-Aoz1akXo', title: 'Puhdys - Alt wie ein Baum', year: 1976 }, // TV
+                { id: 'ysmuZaoc9co', title: 'Frank Zander - Hier kommt Kurt', year: 1989 }, // Original
+                { id: 't8X_dpL3-V0', title: 'EAV - Ba-Ba-Banküberfall', year: 1985 },
+                { id: 'AX6XrAGblaE', title: 'EAV - Märchenprinz', year: 1985 }, // Topic
+                { id: 'xqTBlft8gQA', title: 'Trio - Da Da Da', year: 1982 }, // Official
+                { id: '8-bgiiTxhzM', title: 'Falco - Der Kommissar', year: 1981 }, // Official
+                { id: 'Urw-iutHw5E', title: 'Falco - Rock Me Amadeus', year: 1985 }
+            ]
+        });
+
+        PLAYLISTS.push({
+            name: "The 80s Special",
+            id: "the-80s-special",
+            songs: [
+                // --- DIE GIGANTEN (Pop & Rock) ---
+                { id: 'djV11Xbc914', title: 'a-ha - Take on me', year: 1985 },
+                { id: 'qaZ0oAh4QPs', title: 'Toto - Africa', year: 1982 },
+                { id: 'Zi_XLOBDo_Y', title: 'Michael Jackson - Billie Jean', year: 1982 },
+                { id: 'sOnqjkJTMaA', title: 'Michael Jackson - Thriller', year: 1982 },
+                { id: 'S6Y1gohk5-A', title: 'Prince - Purple rain', year: 1984 },
+                { id: 'dQw4w9WgXcQ', title: 'Rick Astley - Never gonna give you up', year: 1987 },
+                { id: 's__rX_WL100', title: 'Madonna - Like a virgin', year: 1984 },
+                { id: '79fzeNUqQbQ', title: 'Madonna - Like a prayer', year: 1989 },
+                { id: '9f06QZCVUHg', title: 'Bryan Adams - Summer Of \'69', year: 1984 },
+                { id: 'lDK9QqIzhwk', title: 'Bon Jovi - Livin\' on a prayer', year: 1986 },
+                { id: '9jK-NcRmVcw', title: 'Europe - The final countdown', year: 1986 },
+                { id: '2W3u5yXt9Zc', title: 'Survivor - Eye of the tiger', year: 1982 },
+                { id: 'wTP2RUD_cL0', title: 'Dire Straits - Money for nothing', year: 1985 },
+                { id: '5vUDmFjWgVo', title: 'Dire Straits - Brothers in arms', year: 1985 },
+                { id: 'OMOGaugKpzs', title: 'The Police - Every breath you take', year: 1983 },
+                { id: 'vsl3gBVO2k42', title: 'Queen - Another one bites the dust', year: 1980 },
+                { id: 'azdwsXLmrHE', title: 'Queen - Radio ga ga', year: 1984 },
+                { id: 'f4Mc-NYPHaQ', title: 'Queen - I want to break free', year: 1984 },
+                { id: 'l6qzhY1f_5w', title: 'Phil Collins - In the air tonight', year: 1981 },
+                { id: 'SzsDHtzx6tI', title: 'Phil Collins - Another day in paradise', year: 1989 },
+                { id: 'H9tEvfIsD7w', title: 'Eurythmics - Sweet dreams (are made of this)', year: 1983 },
+                { id: 'Lur-SGl3uw8', title: 'Nena - 99 Luftballons', year: 1983 },
+                { id: 'pV-KKbX50sg', title: 'Falco - Rock Me Amadeus', year: 1985 },
+                { id: 'Urw-iutHw5E', title: 'Falco - Jeanny', year: 1985 },
+                { id: 'cVikZ8Oe_XA', title: 'Falco - Der Kommissar', year: 1981 },
+
+                // --- ROCK & METAL HYMNEN ---
+                { id: '1w7OgIMMRc4', title: 'Guns N\' Roses - Sweet child o\' mine', year: 1987 },
+                { id: 'Rbm6GXllBiw', title: 'Guns N\' Roses - Paradise city', year: 1987 },
+                { id: '4gDch1p4c_M', title: 'AC/DC - Back in black', year: 1980 },
+                { id: 'o018byLnMFM', title: 'AC/DC - Hells bells', year: 1980 },
+                { id: '3ZlDZPYzfm4', title: 'Iron Maiden - Run to the hills', year: 1982 },
+                { id: 'WjO3m5sO5O4', title: 'Metallica - One', year: 1988 },
+                { id: 'S7g_W80mQGk', title: 'Metallica - Master of puppets', year: 1986 },
+                { id: 'pWB5JZRGl0U', title: 'Motörhead - Ace of spades', year: 1980 },
+                { id: 'SwYN7mTi6HM', title: 'Van Halen - Jump', year: 1983 },
+                { id: 'Mr4HffbAUTk', title: 'Alice Cooper - Poison', year: 1989 },
+                { id: 'L397TWLwrUU', title: 'Judas Priest - Breaking the law', year: 1980 },
+                { id: 'CjT8c-zU01o', title: 'Scorpions - Still loving you', year: 1984 },
+                { id: 'Scorp_Hurricane', title: 'Scorpions - Rock you like a hurricane', year: 1984 },
+                { id: 'Idol_RebelYell', title: 'Billy Idol - Rebel Yell', year: 1983 },
+                { id: 'qeMFqkcPYcg', title: 'Eurythmics - Here comes the rain again', year: 1983 },
+
+                // --- SYNTH POP & NEW WAVE ---
+                { id: '_6FBfAQ-NDE', title: 'Depeche Mode - Just can\'t get enough', year: 1981 },
+                { id: 'aGSKrC7dGcY', title: 'Depeche Mode - People are people', year: 1984 },
+                { id: 'u1xrNaTO1bI', title: 'Depeche Mode - Personal Jesus', year: 1989 },
+                { id: 'W8r-tXRLazs', title: 'The Buggles - Video killed the radio star', year: 1979 },
+                { id: 'ZeJkbqjQbnk', title: 'Soft Cell - Tainted love', year: 1981 },
+                { id: '8NB3361aVQM', title: 'New Order - Blue Monday', year: 1983 },
+                { id: '9lDCYjb8RHk', title: 'Visage - Fade to grey', year: 1980 },
+                { id: 'cF45JLINXMc', title: 'Alphaville - Big in Japan', year: 1984 },
+                { id: 't1TcDHrkQYg', title: 'Alphaville - Forever young', year: 1984 },
+                { id: '6pHPvP1mwj8', title: 'Camouflage - The great commandment', year: 1987 },
+                { id: 'iIpfWORQWhU', title: 'Tears for Fears - Everybody wants to rule the world', year: 1985 },
+                { id: 'aLEhh_XpJ-0', title: 'Tears for Fears - Shout', year: 1984 },
+                { id: 'Epj84QVw2rc', title: 'Pet Shop Boys - It\'s a sin', year: 1987 },
+                { id: 'bDsk51O1N4A', title: 'Pet Shop Boys - West End girls', year: 1984 },
+                { id: 'QE5D2hJhAcU', title: 'Erasure - A little respect', year: 1988 },
+
+                // --- NDW & DEUTSCHROCK ---
+                { id: 'wO1X-5yM81E', title: 'Peter Schilling - Major Tom', year: 1982 },
+                { id: 'TB751ZCh_zU', title: 'BAP - Verdamp lang her', year: 1981 },
+                { id: 'Groenem_Bochum', title: 'Herbert Grönemeyer - Bochum', year: 1984 },
+                { id: 'Groenem_Maenner', title: 'Herbert Grönemeyer - Männer', year: 1984 },
+                { id: 'KlausLage_1001_2', title: 'Klaus Lage - 1000 und 1 Nacht', year: 1984 },
+                { id: 'Spider_Skandal', title: 'Spider Murphy Gang - Skandal im Sperrbezirk', year: 1981 },
+                { id: 'k9yF3p-xX8Y', title: 'Westernhagen - Freiheit', year: 1987 },
+                { id: 'yGeR7_ZkR_s', title: 'Die Ärzte - Westerland', year: 1988 },
+                { id: 'Maffay_Sonne', title: 'Peter Maffay - Sonne in der Nacht', year: 1985 },
+                { id: '_YYwBLBA4rU', title: 'Gänsehaut - Karl der Käfer', year: 1983 },
+                { id: 'Geier_Brutto2', title: 'Geier Sturzflug - Bruttosozialprodukt', year: 1983 },
+
+                // --- FEEL GOOD & DANCE ---
+                { id: 'Cyndi_Girls', title: 'Cyndi Lauper - Girls just want to have fun', year: 1983 },
+                { id: 'PIb6AZdTr-A', title: 'Cyndi Lauper - Time after time', year: 1983 },
+                { id: 'd27gTrPPAqk', title: 'Sting - Englishman in New York', year: 1987 },
+                { id: 'E8gmARGvPlI', title: 'Wham! - Last Christmas', year: 1984 },
+                { id: 'pIgZ7gMze7A', title: 'Wham! - Wake me up before you go-go', year: 1984 },
+                { id: 'IzFgTfaOqN0', title: 'George Michael - Careless whisper', year: 1984 },
+                { id: 'xos2MnVxe-c', title: 'Whitney Houston - I wanna dance with somebody', year: 1987 },
+                { id: 'XfR9iY5y94s', title: 'Men at Work - Down under', year: 1981 },
+                { id: 'Bangles_Egyptian', title: 'The Bangles - Walk like an Egyptian', year: 1986 },
+                { id: 'P0DK-0fIKCw', title: 'The Bangles - Eternal flame', year: 1988 },
+                { id: 'Roxette_Look', title: 'Roxette - The look', year: 1988 },
+                { id: 'Roxette_Listen', title: 'Roxette - Listen to your heart', year: 1988 },
+                { id: 'Kaoma_Lambada', title: 'Kaoma - Lambada', year: 1989 },
+                { id: 'Bobby_Worry', title: 'Bobby McFerrin - Don\'t worry, be happy', year: 1988 },
+
+                // --- MOVIE HITS & POWER BALLADS ---
+                { id: 'Bx51eegLTY8', title: 'Berlin - Take my breath away', year: 1986 },
+                { id: '4JDZJqGqH_Y', title: 'Bill Medley & Jennifer Warnes - The time of my life', year: 1987 },
+                { id: 'oRdxUFDoQe0', title: 'Ray Parker Jr. - Ghostbusters', year: 1984 },
+                { id: 'UrIiLvg58SY', title: 'Kenny Loggins - Footloose', year: 1984 },
+                { id: 'lcOxhH8N3Bo', title: 'Bonnie Tyler - Total eclipse of the heart', year: 1983 },
+                { id: 'Foreigner_Love', title: 'Foreigner - I want to know what love is', year: 1984 },
+                { id: 'r3Pr1_v7hsw', title: 'T\'Pau - China in your hand', year: 1987 },
+                { id: 'QYHxGBH6o0I', title: 'Kim Wilde - Kids in America', year: 1981 },
+                { id: 'P5ZJui3aPoQ', title: 'The Proclaimers - I\'m gonna be (500 Miles)', year: 1988 },
+                { id: 'Tracy_FastCar', title: 'Tracy Chapman - Fast car', year: 1988 },
+                { id: 'wp43OdtAAkM', title: 'Kate Bush - Running up that hill', year: 1985 },
+                { id: 'Tanita_Twist', title: 'Tanita Tikaram - Twist in my sobriety', year: 1988 },
+                { id: 'lA983t3Rdzs', title: 'Suzanne Vega - Luka', year: 1987 },
+                { id: 'MidnightOil_Beds', title: 'Midnight Oil - Beds are burning', year: 1987 },
+                { id: 'Black_Wonderful', title: 'Black - Wonderful life', year: 1987 },
+
+                // --- ONE HIT WONDER & KURIOSES ---
+                { id: '9m7tPikH0UA', title: 'Toy Dolls - Nellie the elephant', year: 1984 },
+                { id: 'CsHiG-43Fzg', title: 'Dexys Midnight Runners - Come on Eileen', year: 1982 },
+                { id: 'GeZZr_p6vB8', title: 'Kajagoogoo - Too shy', year: 1983 },
+                { id: 'JMcMOfX-jY0', title: 'Opus - Live is life', year: 1985 },
+                { id: 'X-77txuiVXs', title: 'Status Quo - In the army now', year: 1986 }
+            ]
+        });
+
+        PLAYLISTS.push({
+            name: "Jahrescharts 2000-2025",
+            id: "jahrescharts-2000-2025",
+            songs: [
+                { id: 'j5O_50aDkM8', title: 'DJ Ötzi - Anton aus Tirol', year: 1999 },
+                { id: 'UwbO_rT9hKQ', title: 'No Angels - Daylight in Your Eyes', year: 2001 },
+                { id: 'XubVpeq4E20', title: 'Las Ketchup - The Ketchup Song (Aserejé)', year: 2002 },
+                { id: 'Uq9gPaIzbe8', title: 'DSDS Allstars - We Have a Dream', year: 2002 },
+                { id: 's9MszVE7aR4', title: 'O-Zone - Dragostea Din Tei', year: 2003 },
+                { id: 'C3ig-bC-dO8', title: 'Schnappi - Schnappi, das kleine Krokodil', year: 2004 },
+                { id: '9cR-jC4hH80', title: 'Bob Sinclar - Love Generation', year: 2005 },
+                { id: 'O72_OaJ5sZg', title: 'DJ Ötzi & Nik P. - Ein Stern (...der deinen Namen trägt)', year: 2007 },
+                { id: 'ZSM3w1v-A_Y', title: 'Timbaland ft. OneRepublic - Apologize', year: 2007 },
+                { id: 'bESGLojNYSo', title: 'Lady Gaga - Poker Face', year: 2008 },
+                { id: 'V1bFr2SWP1I', title: 'Israel Kamakawiwo ole - Over the Rainbow', year: 1993 },
+                { id: 't4H_Zoh7G5A', title: 'Jennifer Lopez ft. Pitbull - On the Floor', year: 2011 },
+                { id: 'hcm55lU9knw', title: 'Michel Teló - Ai Se Eu Te Pego!', year: 2011 },
+                { id: '5y_KJAg8bHI', title: 'Avicii - Wake Me Up', year: 2013 },
+                { id: 'QZkKk8g-j6E', title: 'Helene Fischer - Atemlos durch die Nacht', year: 2013 },
+                { id: 'jGflUbPQfW8', title: 'Omi - Cheerleader (Felix Jaehn Remix)', year: 2014 },
+                { id: '60ItHLz5WEA', title: 'Alan Walker - Faded', year: 2015 },
+                { id: 'JGwWNGJdvx8', title: 'Ed Sheeran - Shape of You', year: 2017 },
+                { id: 'XqBN_Z_r0F8', title: 'Dynoro & Gigi D Agostino - In My Mind', year: 2018 },
+                { id: 'r7qovpFAGrQ', title: 'Lil Nas X - Old Town Road', year: 2018 },
+                { id: '4NRXx6U8ABQ', title: 'The Weeknd - Blinding Lights', year: 2019 },
+                { id: 'JEOAfPKempU', title: 'Nathan Evans - Wellerman (Sea Shanty)', year: 2021 },
+                { id: 'R1yv5SMKhiI', title: 'DJ Robin & Schürze - Layla', year: 2022 },
+                { id: 'LEvlLtGYPwk', title: 'Udo Lindenberg & Apache 207 - Komet', year: 2023 },
+                { id: 'eLhSxOAaWmg', title: 'Benson Boone - Beautiful Things', year: 2024 },
+                { id: 'FVgQW3iv90M', title: 'Oimara - Wackelkontakt', year: 2025 }
+            ]
+        });
+
+        PLAYLISTS.push({
+            name: "Jahrescharts 1975-1999",
+            id: "jahrescharts-1975-1999",
+            songs: [
+                { id: 'DJUz7R1tUeE', title: 'George Baker Selection - Paloma Blanca', year: 1975 },
+                { id: 'QtxlCsVKkvY', title: 'Boney M. - Daddy Cool', year: 1976 },
+                { id: 'adUPdnzCAk8', title: 'Julie Covington - Dont Cry for Me Argentina', year: 1976 },
+                { id: '2FgDles4xq8', title: 'Boney M. - Rivers of Babylon', year: 1978 },
+                { id: 'r-hNP-CkZYE', title: 'Peter Maffay - So bist du', year: 1979 },
+                { id: 'P5OrPKTFBIY', title: 'Goombay Dance Band - Sun of Jamaica', year: 1979 },
+                { id: 'MVJlkUrMFT0', title: 'Electronicas - Dance Little Bird (Ententanz)', year: 1981 },
+                { id: 'vmwMhjbThKg', title: 'OMD - Maid of Orleans', year: 1981 },
+                { id: 'e80qhyovOnA', title: 'Mike Oldfield - Moonlight Shadow', year: 1983 },
+                { id: 'RP0_8J7uxhs', title: 'Laura Branigan - Self Control', year: 1984 },
+                { id: 'pATX-lV0VFk', title: 'Opus - Live Is Life', year: 1984 },
+                { id: 'Urw-iutHw5E', title: 'Falco - Jeanny, Part I', year: 1985 },
+                { id: '6PDmZnG8KsM', title: 'Desireless - Voyage Voyage', year: 1986 },
+                { id: 'RdSmokR0Enk', title: 'Milli Vanilli - Girl You Know Its True', year: 1988 },
+                { id: 'iFS_lAg_tSo', title: 'David Hasselhoff - Looking for Freedom', year: 1988 },
+                { id: 'x6q0ciiqyG0', title: 'Matthias Reim - Verdammt, ich lieb Dich', year: 1990 },
+                { id: 'n4RjJKxsamQ', title: 'Scorpions - Wind of Change', year: 1990 },
+                { id: 'oW0VovnyjPY', title: 'Dr. Alban - Its My Life', year: 1992 },
+                { id: 'd73tiBBzvFM', title: 'Ace of Base - All That She Wants', year: 1992 },
+                { id: 'Hat1Hc9SNwE', title: 'Mariah Carey - Without You', year: 1993 },
+                { id: 'WYeDsa4Tw0c', title: 'Vangelis - Conquest of Paradise', year: 1994 },
+                { id: 'oKOtzIo-uYw', title: 'Fugees - Killing Me Softly', year: 1996 },
+                { id: '2UidTEgczZg', title: 'Sarah Brightman & Andrea Bocelli - Time to Say Goodbye', year: 1996 },
+                { id: '9bFHsd3o1w0', title: 'Céline Dion - My Heart Will Go On', year: 1997 },
+                { id: 'EK_LN3XEcnw', title: 'Lou Bega - Mambo No. 5', year: 1999 }
+            ]
+        });
+
+
+        PLAYLISTS.push({
+            name: "Linkin Park",
+            id: "linkin-park",
+            songs: [
+                // --- HYBRID THEORY (2000) ---
+                { id: 'kXYiU_JCYtU', title: 'Linkin Park - Numb', year: 2003 },
+                { id: 'eVTXPUF4Oz4', title: 'Linkin Park - In the end', year: 2000 },
+                { id: 'Gd9ohp8vxZs', title: 'Linkin Park - Crawling', year: 2000 },
+                { id: 'v2H4l9RpkwM', title: 'Linkin Park - One step closer', year: 2000 },
+                { id: '9WbCfHutDSE', title: 'Linkin Park - Papercut', year: 2000 },
+                { id: '3t2WkCudLhs', title: 'Linkin Park - Runaway', year: 2000 },
+                { id: 'sjN-NGsRg9g', title: 'Linkin Park - Points of authority', year: 2000 },
+                { id: 'pH0IBb29-4U2', title: 'Linkin Park - A place for my head', year: 2000 },
+
+                // --- METEORA (2003) ---
+                { id: 'LYU-8IFcDPw', title: 'Linkin Park - Faint', year: 2003 },
+                { id: 'gxMQb7z5Q_0', title: 'Linkin Park - Somewhere I belong', year: 2003 },
+                { id: 'vjVkXlxsO8Q', title: 'Linkin Park - Breaking the habit', year: 2003 },
+                { id: 'YLHpvjrFpe0', title: 'Linkin Park - From the inside', year: 2003 },
+                { id: 'c3XfcyQ45w', title: 'Linkin Park - Lying from you', year: 2003 },
+                { id: 'z0dM6f1_g0k', title: 'Linkin Park - Don\'t stay', year: 2003 },
+                { id: 'CMeR8b5d_a4', title: 'Linkin Park - Session', year: 2003 },
+
+                // --- MINUTES TO MIDNIGHT (2007) ---
+                { id: '8sgycukafqQ', title: 'Linkin Park - What I\'ve done', year: 2007 },
+                { id: 'OnuuYcqhzCE', title: 'Linkin Park - Bleed it out', year: 2007 },
+                { id: '0xyxtzD54rM', title: 'Linkin Park - Given up', year: 2007 },
+                { id: 'yNPECkES7mg', title: 'Linkin Park - Leave out all the rest', year: 2007 },
+                { id: 'n1PCW0C1aiM', title: 'Linkin Park - Shadow of the day', year: 2007 },
+                { id: '_c1WqA9_g1A', title: 'Linkin Park - No more sorrow', year: 2007 },
+
+                // --- TRANSFORMERS & SIDE PROJECTS ---
+                { id: 'ysSxxIqKNN0', title: 'Linkin Park - New divide', year: 2009 },
+                { id: 'JcOwJh4F402', title: 'Linkin Park & Jay-Z - Numb/Encore', year: 2004 },
+
+                // --- A THOUSAND SUNS (2010) ---
+                { id: '5qF_qbaWt3Q', title: 'Linkin Park - The catalyst', year: 2010 },
+                { id: 'OUIK0vq_KGI', title: 'Linkin Park - Waiting for the end', year: 2010 },
+                { id: 'kh_YCSW5lPc', title: 'Linkin Park - Burning in the skies', year: 2010 },
+                { id: 'xIgTDBNJ3wI', title: 'Linkin Park - Iridescent', year: 2010 },
+
+                // --- LIVING THINGS (2012) ---
+                { id: 'dxytyRy-O1k', title: 'Linkin Park - Burn it down', year: 2012 },
+                { id: 'co4YpHTqmfQ', title: 'Linkin Park - Lost in the echo', year: 2012 },
+                { id: 'ScNNfyq3d_w', title: 'Linkin Park - Castle of glass', year: 2012 },
+                { id: 'P3pxybe-p9U', title: 'Linkin Park - A light that never comes', year: 2013 },
+
+                // --- THE HUNTING PARTY (2014) ---
+                { id: 'cEaEdZGqlls', title: 'Linkin Park - Guilty all the same', year: 2014 },
+                { id: 'N7gK9k2tW2E', title: 'Linkin Park - Until it\'s gone', year: 2014 },
+                { id: 'FAToHwKlFT8', title: 'Linkin Park - Final masquerade', year: 2014 },
+
+                // --- ONE MORE LIGHT (2017) ---
+                { id: '5dmQ3QWpy1Q', title: 'Linkin Park - Heavy', year: 2017 },
+                { id: 'Tm8LGxTLtAU', title: 'Linkin Park - One more light', year: 2017 },
+                { id: 'lvs68OKOquM', title: 'Linkin Park - Talking to myself', year: 2017 },
+                { id: 'phWxA89DySM', title: 'Linkin Park - Good goodbye', year: 2017 },
+
+                // --- ARCHIVES / METEORA 20 (2023) ---
+                { id: '7NK_JOkuSVY', title: 'Linkin Park - Lost', year: 2023 },
+                { id: 'iMjZJ3yq3_Y', title: 'Linkin Park - Fighting myself', year: 2023 },
+                { id: 'LP_FriendlyFire', title: 'Linkin Park - Friendly fire', year: 2024 },
+
+                // --- FROM ZERO (2024 - New Era) ---
+                { id: '7N6n1I5k8wY', title: 'Linkin Park - The emptiness machine', year: 2024 },
+                { id: 'HeavyCrown_ID', title: 'Linkin Park - Heavy is the crown', year: 2024 },
+                { id: 'OverEach_ID', title: 'Linkin Park - Over each other', year: 2024 },
+                { id: 'TwoFaced_ID', title: 'Linkin Park - Two faced', year: 2024 },
+                { id: 'Casualty_ID', title: 'Linkin Park - Casualty', year: 2024 },
+                { id: 'CutTheBridge_ID', title: 'Linkin Park - Cut the bridge', year: 2024 },
+                { id: 'Stained_ID', title: 'Linkin Park - Stained', year: 2024 },
+                { id: 'IGYE_ID', title: 'Linkin Park - IGYEIH', year: 2024 },
+
+                // --- RARITIES / EXTRAS ---
+                { id: 'QhG3wJj5c6c', title: 'Linkin Park - QWERTY', year: 2006 },
+                { id: 'zsCD5XCu6CM', title: 'Linkin Park - She couldn\'t', year: 2020 }
+            ]
+        });
+
+        PLAYLISTS.push({
+            name: "Deine Freunde",
+            id: "deine-freunde",
+            songs: [
+                // --- ALBUM: Ausm Häuschen (2012) ---
+                { id: 'hXy2-S7t3Q8', title: 'Deine Freunde - Schokolade', year: 2012 },
+                { id: 'FJDTtGhsoTk', title: 'Deine Freunde - Einfach klein sein', year: 2012 },
+                { id: '7IkbhiLrkwI', title: 'Deine Freunde - Deine Mudder', year: 2012 },
+                { id: 'D3uRqPU0FS8', title: 'Deine Freunde - Fang mich doch', year: 2012 },
+                { id: 'L9M0_s_s4cQ', title: 'Deine Freunde - Wie man so schön sagt', year: 2012 },
+
+                // --- ALBUM: Heile Welt (2014) ---
+                { id: 'd7X2H5mS3qQ', title: 'Deine Freunde - Deine Freunde', year: 2014 },
+                { id: 'nxZqmv-CdCU', title: 'Deine Freunde - Attacke', year: 2014 },
+                { id: 'DF_HabIch_ID', title: 'Deine Freunde - Hab ich vergessen', year: 2014 },
+                { id: 'DF_GanzGross_ID', title: 'Deine Freunde - Ganz groß', year: 2014 },
+
+                // --- ALBUM: Kindsköpfe (2015) ---
+                { id: 'J9P2_4d_j-s', title: 'Deine Freunde - Hausaufgaben', year: 2015 },
+                { id: '_O4i9-z_k_E', title: 'Deine Freunde - Wann sind wir da?', year: 2015 },
+                { id: 'DF_GebtUns_ID', title: 'Deine Freunde - Gebt uns eure Kinder', year: 2015 },
+                { id: 'DF_Kapuze_ID', title: 'Deine Freunde - Kapuze', year: 2015 },
+
+                // --- ALBUM: Keine Märchen (2017) ---
+                { id: 'QB3nm5a8yHU', title: 'Deine Freunde - Du bist aber groß geworden', year: 2017 },
+                { id: 'zgNhtHiovZI', title: 'Deine Freunde - Erzähl mal', year: 2017 },
+                { id: 'DF_Meckern_ID', title: 'Deine Freunde - Meckern', year: 2017 },
+                { id: 'DF_LieberFreund_ID', title: 'Deine Freunde - Mein lieber Freund, ich zähl bis drei', year: 2017 },
+
+                // --- ALBUM: Helikopter (2019) ---
+                { id: 'PYYJk79_Qec', title: 'Deine Freunde - Helikopter', year: 2019 },
+                { id: 'qFJ4YwrCCc0', title: 'Deine Freunde - Cheese', year: 2019 },
+                { id: 'RZqKKX53-hs', title: 'Deine Freunde - Wenn der Hausmeister kommt', year: 2019 },
+                { id: 'gMA0eBrxQjY', title: 'Deine Freunde - Aua', year: 2019 },
+
+                // --- SINGLES / EXTRAS ---
+                { id: 'ekio7ldYK78', title: 'Deine Freunde - C64', year: 2021 },
+                { id: 'fymOji_8i0A', title: 'Deine Freunde - Wieder deine Freunde', year: 2020 },
+
+                // --- ALBUM: ordentlich durcheinander (2023) ---
+                { id: 'QmsIY4rAL7M', title: 'Deine Freunde - Haustier', year: 2023 },
+                { id: 'T625-yn3538', title: 'Deine Freunde - Energie', year: 2023 },
+                //{ id: 'DF_ErzaehlMehr_ID', title: 'Deine Freunde - Erzähl mir mehr', year: 2023 }
+            ]
+        });
+
+        PLAYLISTS.push({
+            name: "Royal Republic",
+            id: "royal-republic",
+            songs: [
+                // --- WE ARE THE ROYAL (2010) ---
+                { id: 'SXHchKKLfh8', title: 'Royal Republic - Tommy-Gun', year: 2010 }, // Live 2024
+                { id: '_lbZpFBGq1k', title: 'Royal Republic - Underwear', year: 2010 }, // Official
+                { id: 'YVB0z8B6Y9Y', title: 'Royal Republic - Full Steam Spacemachine', year: 2010 }, // Live Summer Breeze
+                { id: 'DKp8Z_rJ6lA', title: 'Royal Republic - Walking Down The Line', year: 2010 },
+                { id: 'HuD3gOXK-y4', title: 'Royal Republic - All Because of You', year: 2010 },
+                { id: 'tag9qiZ_ZLQ', title: 'Royal Republic - Good to be Bad', year: 2010 },
+                { id: 'msP6c9_u7OU', title: 'Royal Republic - The President\'s Daughter', year: 2010 },
+                { id: 'UT9bujRFbaE', title: 'Royal Republic - Cry Baby Cry', year: 2010 },
+
+                // --- SAVE THE NATION (2012) ---
+                { id: '16g0dD2Y-0k', title: 'Royal Republic - Addictive', year: 2012 },
+                { id: 'Bi_Z4x2Fj6Q', title: 'Royal Republic - Everybody Wants To Be An Astronaut', year: 2012 },
+                { id: 'V-L2wQj7C8c', title: 'Royal Republic - Make Love Not War', year: 2012 }, // Live Acoustic
+                { id: 'ed9qcSOGmzc', title: 'Royal Republic - Save the Nation', year: 2012 },
+                { id: 'ASynZnNZSsk', title: 'Royal Republic - You Ain\'t Nobody (\'Til Somebody Hates You)', year: 2012 },
+                { id: 'v4ZYfSQGEr8', title: 'Royal Republic - Sailing Man', year: 2012 },
+                { id: 'DKRohsX8fC0', title: 'Royal Republic - Molotov', year: 2012 },
+                { id: '5g8yq9q3_hM', title: 'Royal Republic - Revolution', year: 2012 },
+
+                // --- WEEKEND MAN (2016) ---
+                { id: 'LK296veIh0I', title: 'Royal Republic - Baby', year: 2016 }, // Live Rockpalast
+                { id: 'HpDh7y12Co0', title: 'Royal Republic - When I See You Dance With Another', year: 2016 },
+                { id: 'yNabSWOaZp4', title: 'Royal Republic - Uh Huh', year: 2016 },
+                { id: '7LWIEqxzBbw', title: 'Royal Republic - Walk!', year: 2016 },
+                { id: 'lMzwAf4Nf4c', title: 'Royal Republic - Kung Fu Lovin\'', year: 2016 },
+                { id: 'aT6YqaD_cWE', title: 'Royal Republic - Any Given Sunday', year: 2016 },
+                { id: '3Cbe_Xtx5po', title: 'Royal Republic - High Times!', year: 2016 },
+                { id: 'gJzV_Qn9wqA', title: 'Royal Republic - People Say That I\'m Over The Top', year: 2016 },
+
+                // --- CLUB MAJESTY (2019) ---
+                { id: 'nzi-jkXeACQ', title: 'Royal Republic - Fireman & Dancer', year: 2019 }, // Live Pol'And'Rock
+                { id: 'TL--L1FoQZ4', title: 'Royal Republic - Anna-Leigh', year: 2019 }, // Live Rockpalast
+                { id: 'T3yA2-9dydw', title: 'Royal Republic - Boomerang', year: 2019 },
+                { id: '3f1G2Qsd-YU', title: 'Royal Republic - Can\'t Fight The Disco', year: 2019 },
+                { id: 'UAu3qoGzu7k', title: 'Royal Republic - Under Cover', year: 2019 },
+                { id: 'OEJkdH5fOwk', title: 'Royal Republic - Stop Movin\'', year: 2019 },
+                { id: 'ztRuTm3IVoQ', title: 'Royal Republic - Like A Lover', year: 2019 },
+                { id: '8gWk8H2jO_c', title: 'Royal Republic - Club Majesty', year: 2019 },
+                { id: '_LhD4tuAuQs', title: 'Royal Republic - Flower-Power Madness', year: 2019 },
+
+                // --- LOVECOP (2024) ---
+                { id: 'qzUr3Bzb91E', title: 'Royal Republic - My House', year: 2024 },
+                { id: '1fNOthWt4PA', title: 'Royal Republic - LoveCop', year: 2024 },
+                { id: '4-pkGGh7Az4', title: 'Royal Republic - Lazerlove', year: 2024 },
+                { id: 'yloorJmLFUg', title: 'Royal Republic - Wow! Wow! Wow!', year: 2024 },
+                { id: '_1D1zRfFRJg', title: 'Royal Republic - Ain\'t Got Time', year: 2024 },
+                { id: '5VDf9hv6kIU', title: 'Royal Republic - Electra', year: 2024 },
+                { id: 'lW3EQktP3po', title: 'Royal Republic - Sha-La-La-Lady', year: 2024 },
+                { id: '7iJqV-iF7wE', title: 'Royal Republic - Love Somebody', year: 2024 },
+
+                // --- SINGLES & SPECIALS ---
+                { id: 'AOLpL8O0cLw', title: 'Royal Republic - RATA-TATA', year: 2021 },
+                { id: 'Fzo3F61ZnAI', title: 'Royal Republic - Superlove', year: 2022 },
+                { id: 'JLoDMIpfA_4', title: 'Royal Republic - Diggin\' It', year: 2022 },
+                { id: 'zsnfSXfu4Z0', title: 'Royal Republic - Back from the Dead', year: 2021 },
+                { id: '9sw1GoLS88E', title: 'Royal Republic - Magic', year: 2020 },
+                { id: '8gWk8H2jO_c', title: 'Royal Republic - Majesty', year: 2019 },
+                { id: 'r0Hq8M4gK_M', title: 'Royal Republic - Trippin\' In The Night', year: 2022 },
+            ]
+        });
+
+        PLAYLISTS.push({
+            name: "Kraftklub",
+            id: "kraftklub",
+            songs: [
+                // --- MIT K (2012) ---
+                { id: 'CaX_2o8ioec', title: 'Kraftklub - Songs für Liam', year: 2012 },
+                { id: '5H6ILb457ck', title: 'Kraftklub - Ich will nicht nach Berlin', year: 2011 },
+                { id: 'vkqM00UEsbs', title: 'Kraftklub - Eure Mädchen', year: 2012 },
+                { id: '19fabBmFx9Y', title: 'Kraftklub - Kein Liebeslied', year: 2012 },
+                { id: '2OG_nASdsAM', title: 'Kraftklub - Scheissindiedisko', year: 2012 },
+                { id: '1ix6EwVhyM8', title: 'Kraftklub - Karl-Marx-Stadt', year: 2012 },
+                { id: 'MuWtfL8MH3s', title: 'Kraftklub - Zu jung', year: 2012 },
+                { id: 'gTf8GYW5FDM', title: 'Kraftklub - Ritalin/Medikinet', year: 2012 },
+                { id: 'sO_8nRsPQpk', title: 'Kraftklub - Randale', year: 2012 },
+
+                // --- IN SCHWARZ (2014) ---
+                { id: 'KYjocLrwyDI', title: 'Kraftklub - Unsere Fans', year: 2014 },
+                { id: 'mLd9vs5HCdo', title: 'Kraftklub - Wie ich', year: 2014 },
+                { id: '5OdMBEEDqGo', title: 'Kraftklub - Hand in Hand', year: 2014 },
+                { id: '4P8zzwaf0lY', title: 'Kraftklub - Schüsse in die Luft', year: 2014 },
+                { id: '8yN8VTf6Amc', title: 'Kraftklub - Blau', year: 2014 },
+                //{ id: 'HP0fuJmLfW8', title: 'Kraftklub - Alles wegen Dir', year: 2014 },
+                { id: 'tLOFu1dL_xA', title: 'Kraftklub - Zwei Dosen Sprite', year: 2014 },
+
+                // --- KEINE NACHT FÜR NIEMAND (2017) ---
+                { id: 'h01ZDVRYlgk', title: 'Kraftklub - Dein Lied', year: 2017 },
+                { id: 't8A8-4b5OnI', title: 'Kraftklub - Chemie Chemie Ya', year: 2017 },
+                { id: 'Oc3qxU5NySo', title: 'Kraftklub - Sklave', year: 2017 },
+                { id: '44UELeD8UvM', title: 'Kraftklub - Am Ende', year: 2017 },
+                { id: 'vIT5TTg9Oms', title: 'Kraftklub - Fenster', year: 2017 },
+                { id: 'saJog9txrno', title: 'Kraftklub - 500 K', year: 2017 },
+                { id: 'byaIZiMthws', title: 'Kraftklub - Hallo Nacht', year: 2017 },
+
+                // --- KARGO (2022) ---
+                { id: '6a7V-rG-Q4Y', title: 'Kraftklub - Ein Song reicht', year: 2022 },
+                { id: 'YQt3Mz6dsAQ', title: 'Kraftklub - Wittenberg ist nicht Paris', year: 2022 },
+                { id: 'gWfcOqwWdEo', title: 'Kraftklub - Fahrstuhl', year: 2022 },
+                { id: '8C4rmvWu8Qc', title: 'Kraftklub - Teil dieser Band', year: 2022 },
+                { id: 'mnU-Oy3-I-c', title: 'Kraftklub - Blaues Licht', year: 2022 },
+                { id: 'SRLgYy8VCHM', title: 'Kraftklub - Angst', year: 2022 }
+            ]
+        });
+
+        // PLAYLISTS.push({
+        //     name: "Jahrescharts Nr. 1 (1950-1974)",
+        //     id: "jahrescharts-nr1-1950-1974",
+        //     songs: [
+        //         { id: '2oEsWiD8uiU', title: 'Anton Karas - The Harry Lime Theme (Der dritte Mann)', year: 1949 },
+        //         { id: '6Q09gxpVn9g', title: 'Rudi Schuricke - Capri-Fischer', year: 1943 },
+        //         { id: 'K-yqFVqF5Y8', title: 'René Carol - Rote Rosen, rote Lippen, roter Wein', year: 1952 },
+        //         { id: 'Q6xPjMd3c1M', title: 'Friedel Hensch und die Cyprys - Moulin Rouge', year: 1953 },
+        //         { id: 'N5yloHjpFJs', title: 'Friedel Hensch und die Cyprys - Heideröslein', year: 1954 },
+        //         { id: 'RD_z0oKeo5g', title: 'Caterina Valente - Ganz Paris träumt von der Liebe', year: 1954 },
+        //         { id: 'hQO5csT6VbE', title: 'Freddy Quinn - Heimweh', year: 1956 },
+        //         { id: 'w-Kj0qG-21M', title: 'Margot Eskens - Cindy, Oh Cindy', year: 1957 },
+        //         { id: 'lYfK-aXqW1s', title: 'Fred Bertelmann - Der lachende Vagabund', year: 1957 },
+        //         { id: '9tKzRyYb5_4', title: 'Freddy Quinn - Die Gitarre und das Meer', year: 1959 },
+        //         { id: 'E6VvR3hAcZ4', title: 'Jan & Kjeld - Banjo Boy', year: 1959 },
+        //         { id: 'tXidGq46yQ4', title: 'Billy Vaughn - Wheels', year: 1961 },
+        //         { id: 'zCj3bOlcTEw', title: 'Gerhard Wendland - Tanze mit mir in den Morgen', year: 1961 },
+        //         { id: 't_5cDQOJD8w', title: 'Freddy Quinn - Junge, komm bald wieder', year: 1962 },
+        //         { id: 'qXNjsV4t5eA', title: 'Siw Malmkvist - Liebeskummer lohnt sich nicht', year: 1964 },
+        //         { id: 'v8O6BNXnZ-k', title: 'Nini Rosso - Il Silenzio', year: 1965 },
+        //         { id: 'h9ZGKALMMuc', title: 'Frank Sinatra - Strangers in the Night', year: 1966 },
+        //         { id: 'jQGq7w8w2CY', title: 'Sandie Shaw - Puppet on a String', year: 1967 },
+        //         { id: 'izT8k5j4cOQ', title: 'Heintje - Mama', year: 1967 },
+        //         { id: 'P7pZS7vL3vw', title: 'Barry Ryan - Eloise', year: 1968 },
+        //         { id: '6tCSzlhY5iM', title: 'Miguel Rios - A Song of Joy', year: 1970 },
+        //         { id: 'q3Wc12fU4yY', title: 'Danyel Gérard - Butterfly', year: 1971 },
+        //         { id: 'r0hHwT-gR4o', title: 'Bata Illic - Michaela', year: 1972 },
+        //         { id: 'nT107-JpE-c', title: 'Gilbert O Sullivan - Get Down', year: 1973 },
+        //         { id: '3X7PvU6qYEA', title: 'The Rubettes - Sugar Baby Love', year: 1974 }
+        //     ]
+        // });
+
+
+    </script>
+
+    <script>
+
+        // Ausgewählte Playlists (IDs)
+        let selectedPlaylistIds = new Set();
+
+        // Kombinierte Playlist aus allen ausgewählten
+        let combinedPlaylist = [];
+        let currentIndex = 0;
+        let player;
+
+        // 1. YouTube IFrame API laden
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // Flag für YouTube API Bereitschaft
+        let youtubeAPIReady = false;
+        let pendingVideoId = null;
+
+        // Robuste Playlist-Initialisierung mit Polling (für Mobile-Kompatibilität)
+        let initAttempts = 0;
+        const maxAttempts = 30; // 3 Sekunden (30 * 100ms)
+
+        function tryInitPlaylists() {
+            initAttempts++;
+            console.log(`Playlist-Init Versuch ${initAttempts}, gefunden: ${PLAYLISTS.length} Playlists`);
+
+            if (PLAYLISTS.length > 0) {
+                // Playlists gefunden - UI initialisieren (ohne Player zu erstellen)
+                initPlaylistUI();
+                console.log('Playlists erfolgreich initialisiert');
+            } else if (initAttempts < maxAttempts) {
+                // Noch keine Playlists - nochmal versuchen
+                setTimeout(tryInitPlaylists, 100);
+            } else {
+                // Timeout - Fehlermeldung anzeigen
+                const container = document.getElementById('playlist-buttons');
+                container.innerHTML = '<span style="color:#ff6b6b;">Fehler: Keine Playlists gefunden. Bitte Seite neu laden.</span>';
+                console.error('Keine Playlists nach 3 Sekunden gefunden');
+            }
+        }
+
+        // Starte Initialisierung sobald DOM bereit
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', tryInitPlaylists);
+        } else {
+            // DOM ist bereits bereit
+            tryInitPlaylists();
+        }
+
+        function onYouTubeIframeAPIReady() {
+            console.log('YouTube API bereit');
+            youtubeAPIReady = true;
+
+            // Falls eine Video-ID wartet, jetzt Player erstellen
+            if (pendingVideoId && combinedPlaylist.length > 0) {
+                createPlayer(pendingVideoId);
+                pendingVideoId = null;
+            }
+        }
+
+        function createPlayer(videoId) {
+            player = new YT.Player('player', {
+                height: '340',
+                width: '340',
+                videoId: videoId,
+                playerVars: {
+                    'playsinline': 1,
+                    'controls': 0,
+                    'rel': 0
+                },
+                events: {
+                    'onError': onPlayerError
+                }
+            });
+        }
+
+        function initPlaylistUI() {
+            const container = document.getElementById('playlist-buttons');
+            container.innerHTML = '';
+
+            PLAYLISTS.forEach(playlist => {
+                const btn = document.createElement('button');
+                btn.className = 'playlist-btn';
+                btn.id = `btn-${playlist.id}`;
+                btn.textContent = `${playlist.name} (${playlist.songs.length})`;
+                btn.onclick = () => togglePlaylist(playlist.id);
+                container.appendChild(btn);
+            });
+
+            updatePlaylistInfo();
+
+            // Wähle erste Playlist standardmäßig aus
+            if (PLAYLISTS.length > 0) {
+                togglePlaylist(PLAYLISTS[0].id);
+            }
+        }
+
+        function togglePlaylist(playlistId) {
+            if (selectedPlaylistIds.has(playlistId)) {
+                selectedPlaylistIds.delete(playlistId);
+            } else {
+                selectedPlaylistIds.add(playlistId);
+            }
+
+            // Button-Styling aktualisieren
+            document.getElementById(`btn-${playlistId}`).classList.toggle('selected');
+
+            // Kombinierte Playlist neu erstellen
+            rebuildCombinedPlaylist();
+            updatePlaylistInfo();
+        }
+
+        function rebuildCombinedPlaylist() {
+            combinedPlaylist = [];
+
+            PLAYLISTS.forEach(playlist => {
+                if (selectedPlaylistIds.has(playlist.id)) {
+                    combinedPlaylist.push(...playlist.songs);
+                }
+            });
+
+            // Mischen der kombinierten Playlist
+            shuffleArray(combinedPlaylist);
+
+            currentIndex = 0;
+
+            // Player initialisieren oder aktualisieren
+            if (combinedPlaylist.length > 0) {
+                if (player && player.loadVideoById) {
+                    // Player existiert bereits
+                    player.loadVideoById(combinedPlaylist[currentIndex].id);
+                    player.stopVideo();
+                } else if (youtubeAPIReady) {
+                    // YouTube API ist bereit, Player erstellen
+                    createPlayer(combinedPlaylist[currentIndex].id);
+                } else {
+                    // YouTube API noch nicht bereit, Video-ID merken
+                    pendingVideoId = combinedPlaylist[currentIndex].id;
+                    console.log('YouTube API noch nicht bereit, warte...');
+                }
+            }
+
+            // Reset UI
+            document.getElementById('cover').classList.remove('hidden');
+            document.getElementById('solution').innerText = "";
+
+            // Spielzustand zurücksetzen
+            gameState = 'ready';
+            updateButtonHighlight();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function updatePlaylistInfo() {
+            const info = document.getElementById('playlist-info');
+            const count = combinedPlaylist.length;
+            const selectedCount = selectedPlaylistIds.size;
+            info.textContent = `${selectedCount} Playlist(s) ausgewählt • ${count} Songs gesamt`;
+        }
+
+        // YouTube Error Codes:
+        // 2 - Ungültige Video-ID
+        // 5 - HTML5 Player Fehler
+        // 100 - Video nicht gefunden (gelöscht/privat)
+        // 101/150 - Einbettung nicht erlaubt
+        function onPlayerError(event) {
+            const song = combinedPlaylist[currentIndex];
+            const errorMessages = {
+                2: 'Ungültige Video-ID',
+                5: 'HTML5 Player Fehler',
+                100: 'Video nicht gefunden (gelöscht oder privat)',
+                101: 'Einbettung nicht erlaubt',
+                150: 'Einbettung nicht erlaubt'
+            };
+            const errorMsg = errorMessages[event.data] || `Unbekannter Fehler (Code: ${event.data})`;
+
+            console.warn(`⚠️ Video nicht verfügbar: "${song.title}" (${song.id})`);
+            console.warn(`   Fehler: ${errorMsg}`);
+
+            // Automatisch zum nächsten Song wechseln und abspielen
+            skipToNextSong();
+        }
+
+        function showErrorMessage() {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.classList.remove('hidden');
+
+            // Nach 3 Sekunden automatisch ausblenden
+            setTimeout(() => {
+                errorDiv.classList.add('hidden');
+            }, 3000);
+        }
+
+        function skipToNextSong() {
+            if (combinedPlaylist.length === 0) return;
+
+            currentIndex = (currentIndex + 1) % combinedPlaylist.length;
+
+            // Reset UI (Cover bleibt, Lösung wird gelöscht)
+            document.getElementById('cover').classList.remove('hidden');
+            document.getElementById('solution').innerText = "";
+
+            // Lade neuen Song und spiele automatisch ab
+            if (player && player.loadVideoById) {
+                player.loadVideoById(combinedPlaylist[currentIndex].id);
+
+                // Kurz warten bis Video geladen, dann abspielen
+                setTimeout(() => {
+                    if (player && player.playVideo) {
+                        player.playVideo();
+                        gameState = 'playing';
+                        updateButtonHighlight();
+                    }
+                }, 500);
+            } else {
+                gameState = 'ready';
+                updateButtonHighlight();
+            }
+        }
+
+
+        // Spielzustand: 'ready' (Play hervorheben), 'playing' (Auflösen hervorheben), 'revealed' (Nächster hervorheben)
+        let gameState = 'ready';
+
+        function updateButtonHighlight() {
+            const playBtn = document.querySelector('.btn-play');
+            const revealBtn = document.querySelector('.btn-reveal');
+            const nextBtn = document.querySelector('.btn-next');
+
+            // Entferne alle Highlights
+            playBtn.classList.remove('btn-highlight');
+            revealBtn.classList.remove('btn-highlight');
+            nextBtn.classList.remove('btn-highlight');
+
+            // Setze Highlight basierend auf Spielzustand
+            if (gameState === 'ready') {
+                playBtn.classList.add('btn-highlight');
+            } else if (gameState === 'playing') {
+                revealBtn.classList.add('btn-highlight');
+            } else if (gameState === 'revealed') {
+                nextBtn.classList.add('btn-highlight');
+            }
+        }
+
+        // ============================================
+        // TIMER SYSTEM
+        // ============================================
+
+        // Timer-State
+        let songTimerInterval = null;
+        let gameTimerInterval = null;
+        let songTimeRemaining = 0;
+        let gameTimeRemaining = 0;
+        let gameTimerPaused = true;
+
+        // Timer-Settings
+        function getSongTimerDuration() {
+            return parseInt(document.getElementById('song-timer-slider').value);
+        }
+
+        function getGameTimerDuration() {
+            return parseInt(document.getElementById('game-timer-slider').value) * 60; // Minuten zu Sekunden
+        }
+
+        function isSongTimerEnabled() {
+            return document.getElementById('song-timer-enabled').checked;
+        }
+
+        function isGameTimerEnabled() {
+            return document.getElementById('game-timer-enabled').checked;
+        }
+
+        // Format time as MM:SS
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const songTimerBox = document.getElementById('song-timer-box');
+            const songTimerValue = document.getElementById('song-timer-value');
+            const gameTimerBox = document.getElementById('game-timer-box');
+            const gameTimerValue = document.getElementById('game-timer-value');
+
+            // Song Timer
+            if (isSongTimerEnabled() && gameState === 'playing') {
+                songTimerBox.classList.remove('inactive');
+                songTimerValue.textContent = formatTime(songTimeRemaining);
+
+                // Warning colors
+                songTimerValue.classList.remove('warning', 'danger');
+                if (songTimeRemaining <= 5) {
+                    songTimerValue.classList.add('danger');
+                } else if (songTimeRemaining <= 10) {
+                    songTimerValue.classList.add('warning');
+                }
+            } else {
+                songTimerBox.classList.toggle('inactive', !isSongTimerEnabled());
+                songTimerValue.textContent = isSongTimerEnabled() ? formatTime(getSongTimerDuration()) : '--:--';
+                songTimerValue.classList.remove('warning', 'danger');
+            }
+
+            // Game Timer
+            if (isGameTimerEnabled()) {
+                gameTimerBox.classList.remove('inactive');
+                gameTimerValue.textContent = formatTime(gameTimeRemaining);
+
+                // Warning colors
+                gameTimerValue.classList.remove('warning', 'danger');
+                if (gameTimeRemaining <= 30) {
+                    gameTimerValue.classList.add('danger');
+                } else if (gameTimeRemaining <= 60) {
+                    gameTimerValue.classList.add('warning');
+                }
+            } else {
+                gameTimerBox.classList.add('inactive');
+                gameTimerValue.textContent = '--:--';
+                gameTimerValue.classList.remove('warning', 'danger');
+            }
+        }
+
+        // Start song timer
+        function startSongTimer() {
+            stopSongTimer();
+
+            if (!isSongTimerEnabled()) return;
+
+            songTimeRemaining = getSongTimerDuration();
+            updateTimerDisplay();
+
+            songTimerInterval = setInterval(() => {
+                songTimeRemaining--;
+                updateTimerDisplay();
+
+                if (songTimeRemaining <= 0) {
+                    stopSongTimer();
+                    // Stop the song playback when timer runs out
+                    if (player && player.pauseVideo) {
+                        player.pauseVideo();
+                    }
+                    // Spieler können jetzt nachdenken und selbst auflösen
+                    updateTimerDisplay();
+                }
+            }, 1000);
+        }
+
+        // Stop song timer
+        function stopSongTimer() {
+            if (songTimerInterval) {
+                clearInterval(songTimerInterval);
+                songTimerInterval = null;
+            }
+        }
+
+        // Start/Resume game timer
+        function startGameTimer() {
+            if (!isGameTimerEnabled() || !gameTimerPaused) return;
+
+            gameTimerPaused = false;
+
+            gameTimerInterval = setInterval(() => {
+                if (gameTimeRemaining > 0) {
+                    gameTimeRemaining--;
+                    updateTimerDisplay();
+
+                    if (gameTimeRemaining <= 0) {
+                        stopGameTimer();
+                        // Timer abgelaufen - Spiel stoppen
+                        if (player && player.pauseVideo) {
+                            player.pauseVideo();
+                        }
+                        stopSongTimer();
+                        alert('⏰ Zeit abgelaufen! Der Gesamt-Timer ist bei 0:00 angekommen.');
+                    }
+                }
+            }, 1000);
+        }
+
+        // Pause game timer
+        function pauseGameTimer() {
+            if (gameTimerInterval) {
+                clearInterval(gameTimerInterval);
+                gameTimerInterval = null;
+            }
+            gameTimerPaused = true;
+        }
+
+        // Stop game timer completely
+        function stopGameTimer() {
+            pauseGameTimer();
+        }
+
+        // Reset game timer
+        function resetGameTimer() {
+            pauseGameTimer();
+            gameTimeRemaining = getGameTimerDuration();
+            updateTimerDisplay();
+        }
+
+        // Initialize timer settings event listeners
+        function initTimerSettings() {
+            // Song timer slider
+            const songSlider = document.getElementById('song-timer-slider');
+            const songLabel = document.getElementById('song-timer-label');
+            songSlider.addEventListener('input', () => {
+                songLabel.textContent = `${songSlider.value} Sek`;
+                updateTimerDisplay();
+            });
+
+            // Game timer slider
+            const gameSlider = document.getElementById('game-timer-slider');
+            const gameLabel = document.getElementById('game-timer-label');
+            gameSlider.addEventListener('input', () => {
+                gameLabel.textContent = `${gameSlider.value} Min`;
+                gameTimeRemaining = parseInt(gameSlider.value) * 60;
+                updateTimerDisplay();
+            });
+
+            // Function to update timer visibility based on checkbox state
+            function updateTimerVisibility() {
+                const songTimerEnabled = document.getElementById('song-timer-enabled').checked;
+                const gameTimerEnabled = document.getElementById('game-timer-enabled').checked;
+
+                // Toggle timer box visibility
+                document.getElementById('song-timer-box').classList.toggle('timer-hidden', !songTimerEnabled);
+                document.getElementById('game-timer-box').classList.toggle('timer-hidden', !gameTimerEnabled);
+
+                // Toggle slider control visibility
+                document.getElementById('song-timer-control').classList.toggle('control-hidden', !songTimerEnabled);
+                document.getElementById('game-timer-control').classList.toggle('control-hidden', !gameTimerEnabled);
+            }
+
+            // Checkbox handlers
+            document.getElementById('song-timer-enabled').addEventListener('change', () => {
+                updateTimerVisibility();
+                updateTimerDisplay();
+            });
+
+            document.getElementById('game-timer-enabled').addEventListener('change', () => {
+                if (isGameTimerEnabled()) {
+                    gameTimeRemaining = getGameTimerDuration();
+                }
+                updateTimerVisibility();
+                updateTimerDisplay();
+            });
+
+            // Initial values
+            gameTimeRemaining = getGameTimerDuration();
+            updateTimerVisibility();
+            updateTimerDisplay();
+        }
+
+        // ============================================
+        // MODIFIED GAME FUNCTIONS (Timer Integration)
+        // ============================================
+
+        // Wrap original playSong with timer logic
+        const originalPlaySong = function () {
+            if (player && player.playVideo && combinedPlaylist.length > 0) {
+                player.playVideo();
+                gameState = 'playing';
+                updateButtonHighlight();
+            }
+        };
+
+        function playSong() {
+            originalPlaySong();
+            if (gameState === 'playing') {
+                startSongTimer();
+                startGameTimer();
+            }
+        }
+
+        // Wrap original revealSong with timer logic
+        const originalRevealSong = function () {
+            if (combinedPlaylist.length === 0) return;
+
+            // Verstecke den Vorhang
+            document.getElementById('cover').classList.add('hidden');
+            // Zeige Text-Lösung
+            const song = combinedPlaylist[currentIndex];
+            document.getElementById('solution').innerText = `${song.title} (${song.year})`;
+
+            gameState = 'revealed';
+            updateButtonHighlight();
+        };
+
+        function revealSong() {
+            stopSongTimer();
+            pauseGameTimer();
+            originalRevealSong();
+            updateTimerDisplay();
+        }
+
+        // Wrap original nextSong with timer logic
+        const originalNextSong = function () {
+            if (combinedPlaylist.length === 0) return;
+
+            currentIndex = (currentIndex + 1) % combinedPlaylist.length;
+
+            // Reset UI
+            document.getElementById('cover').classList.remove('hidden');
+            document.getElementById('solution').innerText = "";
+
+            // Lade neuen Song, aber pausiere erst mal (wegen Browser-Richtlinien)
+            if (player && player.loadVideoById) {
+                player.loadVideoById(combinedPlaylist[currentIndex].id);
+                player.stopVideo();
+            }
+
+            gameState = 'ready';
+            updateButtonHighlight();
+        };
+
+        function nextSong() {
+            stopSongTimer();
+            originalNextSong();
+            updateTimerDisplay();
+        }
+
+        // Initiales Highlight setzen wenn DOM bereit
+        document.addEventListener('DOMContentLoaded', function () {
+            updateButtonHighlight();
+            initTimerSettings();
+        });
+    </script>
+</body>
+
+</html>

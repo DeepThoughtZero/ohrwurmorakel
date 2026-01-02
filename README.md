@@ -1,0 +1,56 @@
+## 🎲 Spielvarianten
+
+Das **OhrwurmOrakel** ist flexibel! Egal ob ihr euch duellieren wollt, als Team gegen die Zeit spielt oder eine entspannte Runde rätselt – hier ist für jeden etwas dabei.
+
+### 🔥 1. Der Klassiker: "Shout & Loud"
+*Adrenalin pur. Jeder gegen Jeden.*
+
+Der "Play"-Button wird gedrückt. Jetzt zählt jede Millisekunde!
+* Wer zuerst **Interpret** und **Titel** korrekt in den Raum ruft, erhält den Punkt.
+* 🚫 **Risiko:** Wer falsch rät, ist für den laufenden Song **gesperrt** und muss schweigen, bis die anderen gelöst haben (oder aufgeben).
+
+### ⏳ 2. Die Zeitreise: "Timeline Battle"
+*Taktik, Wissen und eine schnelle Hand.*
+
+**Vorbereitung:** Die Jahreskärtchen liegen als Vorrat in der Tischmitte. Dazu eine **Glocke** (oder ein Buzzer). Jeder Spieler startet mit einer leeren "Zeitreihe" vor sich.
+
+1.  Ein Song wird angespielt.
+2.  Wer glaubt, das Erscheinungsjahr zu wissen (oder wo es sich einordnet), haut auf die Glocke! 🔔
+3.  **Der Einsatz:**
+    * **Richtig?** Du darfst dir das entsprechende Jahreskärtchen nehmen und in deinen Zeitstrahl einbauen.
+    * **Falsch?** Strafe muss sein! Du musst eines deiner bereits gewonnenen Jahreskärtchen zurück in die Mitte legen.
+4.  Gewonnen hat, wer zuerst z.B. 10 Jahre gesammelt hat.
+
+### 📝 3. Der Pub-Quiz Modus: "Blind Audition"
+*Für Experten und Genießer. Kein Gebrüll, pures Wissen.*
+
+Alle Spieler erhalten Zettel und Stift. Das Video wird in der App **verdeckt** (der "Vorhang" ist zu).
+Nach jedem Song notiert jeder still seine Tipps. Erst wenn alle fertig sind, wird der Vorhang gelüftet!
+
+**Punktevergabe (Max. 3 pro Song):**
+* ✅ 1 Punkt für den richtigen **Interpreten**
+* ✅ 1 Punkt für den korrekten **Songtitel**
+* ✅ 1 Punkt für das exakte **Erscheinungsjahr**
+
+### 🤝 4. Koop-Modus: "Beat the Clock"
+*Ihr alle gegen die Uhr.*
+
+Ihr spielt als ein Team. Stellt einen Timer (z.B. auf 5 oder 10 Minuten).
+* Startet den ersten Song. Diskutiert kurz: *80er? 90er? Vor oder nach "Wind of Change"?*
+* Wenn ihr euch einig seid, ordnet das Lied gedanklich (oder mit Karten) in euren **gemeinsamen Zeitstrahl** ein und klickt auf Auflösen.
+* **Richtig?** Das Jahr wird fest eingeloggt. Nächster Song!
+* **Falsch?** Der Zeitstrahl wird an dieser Stelle nicht erweitert.
+* **Ziel:** Wie lang wird euer Zeitstrahl, bevor der Timer abläuft? Knackt euren Highscore!
+
+---
+
+## 🖨️ Material zum Ausdrucken
+
+Damit ihr direkt loslegen könnt, habe ich Jahreskärtchen und Punktelisten vorbereitet. Einfach herunterladen, ausdrucken und ausschneiden.
+
+* **📄 [Jahreskärtchen (PDF) herunterladen](material/jahreskarten.pdf)** *(Enthält die Jahre 1960 bis 2025)*
+
+---
+
+**Copyright & Lizenz** 
+Dieses Projekt ist für die private Nutzung gedacht. Der Quellcode darf ohne meine ausdrückliche schriftliche Genehmigung nicht kopiert, modifiziert oder anderweitig verbreitet werden. Das Spielen über die bereitgestellte Webseite ist natürlich erlaubt und erwünscht!
