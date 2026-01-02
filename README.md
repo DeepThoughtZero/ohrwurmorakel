@@ -9,11 +9,6 @@
 
 **Bist du bereit, dein Musikwissen auf die Probe zu stellen?**
 
-Mach dein Wohnzimmer zur Showbühne! Das **OhrwurmOrakel** ist das interaktive Musik-Quiz für echte Kenner, Party-Gamer und Nostalgiker. Egal ob du ein Kind der 80er bist, die großen Hymnen liebst oder bei aktuellen Charts mitsingen kannst – hier ist für jeden die richtige Playlist dabei.
-
-### Das erwartet euch:
-... (hier geht dein Text weiter wie bisher)
-
 Mach dein Wohnzimmer zur Showbühne! Das **Ohrwurm-Orakel** ist das interaktive Musik-Quiz für echte Kenner, Party-Gamer und Nostalgiker. Egal ob du ein Kind der 80er bist, die großen Hymnen liebst oder bei aktuellen Charts mitsingen kannst – hier ist für jeden die richtige Playlist dabei.
 
 ### Das erwartet euch:
@@ -31,7 +26,7 @@ Einfach Playlist wählen, "Abspielen" drücken und losraten: **Interpret**, **Ti
 
 ## 🎲 Spielvarianten
 
-Das **OhrwurmOrakel** ist flexibel! Egal ob ihr euch duellieren wollt, als Team gegen die Zeit spielt oder eine entspannte Runde rätselt – hier ist für jeden etwas dabei.
+Das **Ohrwurm-Orakel** ist flexibel! Egal ob ihr euch duellieren wollt, als Team gegen die Zeit spielt oder eine entspannte Runde rätselt – hier ist für jeden etwas dabei.
 
 ### 🔥 1. Der Klassiker: "Shout & Loud"
 *Adrenalin pur. Jeder gegen Jeden.*
