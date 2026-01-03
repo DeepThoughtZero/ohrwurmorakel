@@ -2,9 +2,11 @@
 <html lang="de">
 
 <head>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎵 Ohrwurm-Orakel - Das Party-Musik-Quiz!</title>
+    <title>Ohrwurm-Orakel</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -1935,10 +1937,9 @@
 
             // Player initialisieren oder aktualisieren
             if (combinedPlaylist.length > 0) {
-                if (player && player.loadVideoById) {
-                    // Player existiert bereits
-                    player.loadVideoById(combinedPlaylist[currentIndex].id);
-                    player.stopVideo();
+                if (player && player.cueVideoById) {
+                    // Player existiert bereits - cueVideoById lädt ohne Autoplay
+                    player.cueVideoById(combinedPlaylist[currentIndex].id);
                 } else if (youtubeAPIReady) {
                     // YouTube API ist bereit, Player erstellen
                     createPlayer(combinedPlaylist[currentIndex].id);
@@ -2014,18 +2015,26 @@
             document.getElementById('cover').classList.remove('hidden');
             document.getElementById('solution').innerText = "";
 
-            // Lade neuen Song und spiele automatisch ab
+            // Lade neuen Song
             if (player && player.loadVideoById) {
-                player.loadVideoById(combinedPlaylist[currentIndex].id);
+                // Nur automatisch abspielen, wenn der Benutzer bereits einmal gestartet hat
+                if (userHasStartedPlaying) {
+                    player.loadVideoById(combinedPlaylist[currentIndex].id);
 
-                // Kurz warten bis Video geladen, dann abspielen
-                setTimeout(() => {
-                    if (player && player.playVideo) {
-                        player.playVideo();
-                        gameState = 'playing';
-                        updateButtonHighlight();
-                    }
-                }, 500);
+                    // Kurz warten bis Video geladen, dann abspielen
+                    setTimeout(() => {
+                        if (player && player.playVideo) {
+                            player.playVideo();
+                            gameState = 'playing';
+                            updateButtonHighlight();
+                        }
+                    }, 500);
+                } else {
+                    // Beim ersten Start nur laden, nicht abspielen
+                    player.cueVideoById(combinedPlaylist[currentIndex].id);
+                    gameState = 'ready';
+                    updateButtonHighlight();
+                }
             } else {
                 gameState = 'ready';
                 updateButtonHighlight();
@@ -2035,6 +2044,9 @@
 
         // Spielzustand: 'ready' (Play hervorheben), 'playing' (Auflösen hervorheben), 'revealed' (Nächster hervorheben)
         let gameState = 'ready';
+
+        // Flag: Hat der Benutzer schon einmal "Abspielen" gedrückt?
+        let userHasStartedPlaying = false;
 
         function updateButtonHighlight() {
             const playBtn = document.querySelector('.btn-play');
@@ -2273,6 +2285,7 @@
         // Wrap original playSong with timer logic
         const originalPlaySong = function () {
             if (player && player.playVideo && combinedPlaylist.length > 0) {
+                userHasStartedPlaying = true; // Benutzer hat zum ersten Mal "Abspielen" gedrückt
                 player.playVideo();
                 gameState = 'playing';
                 updateButtonHighlight();
