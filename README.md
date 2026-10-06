@@ -29,6 +29,14 @@ Einfach Playlist wählen, "Abspielen" drücken und losraten: **Interpret**, **Ti
 
 > **Warnung:** Akute Ohrwurm-Gefahr! 🎶
 
+### 🎛️ Bedienung
+
+* 💿 **Showbühne:** Die Platte dreht sich, solange die Musik läuft – beim Auflösen öffnet sich der Vorhang.
+* 🏷️ **Antwort-Tafeln:** Interpret, Titel und Jahr drehen sich nacheinander um, das Jahr zählt hoch wie ein Spielautomat.
+* 📜 **Verlauf:** Alle aufgelösten Songs landen auf einem Zeitstrahl – perfekt für „Timeline Battle“ und „Beat the Clock“.
+* 💾 **Merkt sich alles:** Playlist-Auswahl und Timer-Einstellungen bleiben beim nächsten Besuch erhalten.
+* ⌨️ **Tastenkürzel:** `Leertaste` = nächster Schritt (Abspielen → Auflösen → Weiter), `P` Abspielen, `A` Auflösen, `N` Nächster Song, `F` Vollbild, `?` Hilfe.
+
 ---
 
 ## 🎲 Spielvarianten
