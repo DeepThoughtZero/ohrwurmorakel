@@ -48,3 +48,7 @@ PLAYLISTS.push({
 - Lokal über einen Webserver öffnen (YouTube funktioniert nicht über `file://`):
   `python3 -m http.server 8000` → http://localhost:8000
 - Kurz prüfen: Desktop- und Handy-Breite, Abspielen → Auflösen → Nächster Song, Timer, Playlist-Auswahl, Tastenkürzel.
+
+## YouTube-Links prüfen
+
+`python3 tools/check_youtube_links.py` – fragt pro Video den oEmbed-Endpunkt ab (gedrosselt, mit Cache in `tools/.youtube-check-cache.json`, abbrechbar und fortsetzbar) und meldet gelöschte/nicht einbettbare Videos, unpassende Titel und gleiche Video-IDs für verschiedene Songs. Bericht: `tools/youtube-check-report.md`. Optionen: `--playlist <id>`, `--via noembed`, `--delay`, `--limit`, `--suggest` (Ersatzvorschläge per yt-dlp).
