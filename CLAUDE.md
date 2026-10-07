@@ -1,5 +1,7 @@
 # CLAUDE.md – Arbeitsweise im Projekt Ohrwurm-Orakel
 
+> **Wichtigste Regel: Commit und Push immer direkt auf `main`.**
+
 ## Git-Workflow (verbindlich)
 
 Nach **jeder** Änderung immer direkt committen und auf `main` pushen:
