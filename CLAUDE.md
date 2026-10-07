@@ -49,6 +49,8 @@ PLAYLISTS.push({
   `python3 -m http.server 8000` → http://localhost:8000
 - Kurz prüfen: Desktop- und Handy-Breite, Abspielen → Auflösen → Nächster Song, Timer, Playlist-Auswahl, Tastenkürzel.
 
-## YouTube-Links prüfen
+## YouTube-Links prüfen und reparieren
 
-`python3 tools/check_youtube_links.py` – fragt pro Video den oEmbed-Endpunkt ab (gedrosselt, mit Cache in `tools/.youtube-check-cache.json`, abbrechbar und fortsetzbar) und meldet gelöschte/nicht einbettbare Videos, unpassende Titel und gleiche Video-IDs für verschiedene Songs. Bericht: `tools/youtube-check-report.md`. Optionen: `--playlist <id>`, `--via noembed`, `--delay`, `--limit`, `--suggest` (Ersatzvorschläge per yt-dlp).
+- `python3 tools/check_youtube_links.py` – fragt pro Video den oEmbed-Endpunkt ab (gedrosselt, mit Cache in `tools/.youtube-check-cache.json`, abbrechbar und fortsetzbar) und meldet gelöschte/nicht einbettbare Videos, unpassende Titel und gleiche Video-IDs für verschiedene Songs. Bericht: `tools/youtube-check-report.md`. Optionen: `--playlist <id>`, `--via noembed`, `--delay`, `--limit`, `--suggest` (Ersatzvorschläge per yt-dlp).
+- `python3 tools/find_replacements.py --playlist <id> [--apply]` – sucht per `yt-dlp` automatisch nach funktionierenden und einbettbaren Ersatz-Videos für alle als FEHLT oder KEIN_EMBED gemeldeten Songs einer Playlist und kann diese direkt in `index.html` übertragen.
+
