@@ -174,46 +174,6 @@
             z-index: 80;
         }
 
-        .grid-floor {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 38vh;
-            overflow: hidden;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.45;
-            -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 90%);
-            mask-image: linear-gradient(to top, #000 0%, transparent 90%);
-        }
-
-        .grid-floor::before {
-            content: '';
-            position: absolute;
-            left: -60%;
-            right: -60%;
-            bottom: 0;
-            height: 220%;
-            background-image:
-                linear-gradient(rgba(236, 72, 153, 0.55) 1.5px, transparent 1.5px),
-                linear-gradient(90deg, rgba(168, 85, 247, 0.5) 1.5px, transparent 1.5px);
-            background-size: 64px 64px;
-            transform-origin: 50% 100%;
-            transform: perspective(260px) rotateX(62deg);
-            animation: gridScroll 2.6s linear infinite;
-        }
-
-        @keyframes gridScroll {
-            from {
-                transform: perspective(260px) rotateX(62deg) translateY(0);
-            }
-
-            to {
-                transform: perspective(260px) rotateX(62deg) translateY(64px);
-            }
-        }
-
         /* ============================================
            HEADER
            ============================================ */
@@ -1134,7 +1094,9 @@
             cursor: pointer;
             overflow: hidden;
             isolation: isolate;
-            filter: saturate(0.55) brightness(0.72);
+            filter: saturate(0.25) brightness(0.5);
+            opacity: 0.6;
+            transform: scale(0.94);
             box-shadow:
                 0 8px 22px -10px var(--btn-glow),
                 inset 0 1px 0 rgba(255, 255, 255, 0.35),
@@ -1159,8 +1121,9 @@
         }
 
         .game-btn:hover {
-            filter: saturate(0.9) brightness(0.95);
-            transform: translateY(-3px);
+            filter: saturate(0.7) brightness(0.8);
+            opacity: 0.85;
+            transform: translateY(-2px) scale(0.96);
         }
 
         .game-btn:active {
@@ -1216,11 +1179,14 @@
 
         /* Pulsierendes Highlight für die nächste Aktion */
         .game-btn.btn-highlight {
-            filter: none;
-            transform: translateY(-3px) scale(1.04);
+            filter: saturate(1.25) brightness(1.1);
+            opacity: 1;
+            z-index: 1;
+            transform: translateY(-5px) scale(1.12);
             box-shadow:
-                0 16px 40px -8px var(--btn-glow),
-                0 0 0 2px rgba(255, 255, 255, 0.25),
+                0 20px 50px -6px var(--btn-glow),
+                0 0 28px 2px var(--btn-glow),
+                0 0 0 3px rgba(255, 255, 255, 0.55),
                 inset 0 1px 0 rgba(255, 255, 255, 0.45),
                 inset 0 -3px 0 rgba(0, 0, 0, 0.2);
         }
@@ -2152,7 +2118,6 @@
     <!-- Hintergrund-Effekte -->
     <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
     <canvas id="bg-notes" aria-hidden="true"></canvas>
-    <div class="grid-floor" aria-hidden="true"></div>
     <canvas id="confetti-canvas" aria-hidden="true"></canvas>
 
     <header class="topbar">
@@ -4823,7 +4788,7 @@
             📜 Spielregeln, Varianten & Jahreskarten findest du auf
             <a href="https://github.com/DeepThoughtZero/ohrwurmorakel" target="_blank" rel="noopener">GitHub ↗</a>
         </p>
-        <p>Mit ❤️ & 🎶 gemacht von Jochen Reith</p>
+        <p>Mit ❤️ & 🎶 gemacht von Magic Fox Studios</p>
     </footer>
 
 </body>
