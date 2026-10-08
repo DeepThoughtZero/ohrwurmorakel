@@ -1826,29 +1826,6 @@
         /* ============================================
            TOAST & MODALS
            ============================================ */
-        #error-message {
-            position: fixed;
-            top: max(18px, env(safe-area-inset-top));
-            left: 50%;
-            z-index: 90;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            max-width: calc(100vw - 32px);
-            padding: 14px 20px;
-            border-radius: 18px;
-            background: linear-gradient(135deg, rgba(231, 76, 60, 0.95), rgba(192, 57, 43, 0.95));
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 30px rgba(231, 76, 60, 0.35);
-            transform: translateX(-50%);
-            animation: toastIn 0.45s var(--ease-spring);
-            text-align: left;
-        }
-
-        #error-message small {
-            display: block;
-            opacity: 0.85;
-        }
-
         @keyframes toastIn {
             from {
                 opacity: 0;
@@ -2440,12 +2417,6 @@
             </div>
         </aside>
     </main>
-
-    <!-- Fehlermeldung für nicht verfügbare Videos -->
-    <div id="error-message" class="hidden" role="status">
-        <span aria-hidden="true">⚠️</span>
-        <span>Lied nicht verfügbar<small>Weiter geht's mit dem nächsten Song …</small></span>
-    </div>
 
     <!-- Zeit abgelaufen -->
     <div class="modal hidden" id="gameover-modal" role="dialog" aria-modal="true" aria-labelledby="gameover-title">
@@ -3805,26 +3776,14 @@
             const errorMsg = errorMessages[event.data] || `Unbekannter Fehler (Code: ${event.data})`;
 
             if (song) {
-                console.warn(`⚠️ Video nicht verfügbar: "${song.title}" (${song.id})`);
+                console.warn(`⚠️ Video nicht verfügbar: "${song.title}" (${song.id}) – YouTube-Fehlercode ${event.data}: ${errorMsg}`);
+            } else {
+                console.warn(`⚠️ Video nicht verfügbar – YouTube-Fehlercode ${event.data}: ${errorMsg}`);
             }
-            console.warn(`   Fehler: ${errorMsg}`);
 
-            // Hinweis zeigen und automatisch zum nächsten Song wechseln
-            showErrorMessage();
+            // Unbemerkt zum nächsten Song wechseln (Details nur in der Konsole)
+            console.info('   → Überspringe automatisch zum nächsten Song.');
             skipToNextSong();
-        }
-
-        let errorTimeout = null;
-
-        function showErrorMessage() {
-            const errorDiv = document.getElementById('error-message');
-            errorDiv.classList.remove('hidden');
-
-            // Nach 3 Sekunden automatisch ausblenden
-            clearTimeout(errorTimeout);
-            errorTimeout = setTimeout(() => {
-                errorDiv.classList.add('hidden');
-            }, 3000);
         }
 
         function skipToNextSong() {
