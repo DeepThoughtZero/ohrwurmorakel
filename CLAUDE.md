@@ -4,7 +4,7 @@
 
 ## Git-Workflow (verbindlich)
 
-Nach **jeder** Änderung immer direkt committen und auf `main` pushen:
+Nach **jeder** Änderung – insbesondere bei allen merklichen Änderungen (Features, Fixes, UI-Anpassungen, Playlist-Updates) – immer direkt committen und auf `main` pushen:
 
 ```bash
 git add -A
